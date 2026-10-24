@@ -11,14 +11,22 @@ export const profile = {
   tagline:
     "3rd-year B.Tech CSE student building intelligent systems — and endlessly curious about the universe.",
   // The short line under your big name on the first screen
-  heroLine: "I build intelligent systems with AI & ML, write software that works, and never stop looking up at the stars.",
+  heroLine: "The magic you are looking for is in the work you are avoiding.",
   university: "Marwadi University",
   degree: "B.Tech in Computer Science & Engineering",
   year: "3rd year",
-  // TODO: add your email here to show an "Email" link on the contact section.
-  email: "",
+  // Shown as the main link on the contact screens
+  email: "arpankumarpandaar7@gmail.com",
   github: "https://github.com/Arpan-ar7",
   linkedin: "https://www.linkedin.com/in/arpankumarpanda",
+};
+
+// Where the live night sky on the home page is seen from (Rajkot, home of Marwadi University).
+// Change these to any place on Earth: lat = north is +, lon = east is +.
+export const sky = {
+  place: "Rajkot, India",
+  lat: 22.3,
+  lon: 70.8,
 };
 
 // Paragraphs shown in the "About" section
@@ -28,6 +36,12 @@ export const about = [
   "Outside of code I'm drawn to the big questions — space, cosmology, physics, maths, chemistry and human biology. Lately I've also been getting curious about cybersecurity.",
 ];
 
+// The quote at the end of the About section
+export const aboutQuote = {
+  text: "Jack of all trades, master of none.",
+  author: "English proverb",
+};
+
 // Small stat cards in the About section
 export const stats = [
   { value: "3rd", label: "Year of B.Tech CSE" },
@@ -35,19 +49,27 @@ export const stats = [
   { value: "AI/ML", label: "Main focus" },
 ];
 
-// Skill groups (the "Skills" section). Add or remove freely.
+// Skills (the "Skills" section). Each card has a short line and its skills sorted into groups.
+// Add or remove skills and groups freely.
 export const skills = [
   {
     title: "AI / Machine Learning",
-    items: ["Python", "PyTorch", "scikit-learn", "Pandas", "NumPy", "NLP", "RNNs", "Word2Vec", "LangChain", "LangGraph"],
+    icon: "ai",
+    blurb: "Building, training and shipping models, from classic ML to LLM-powered agents.",
+    groups: [
+      { label: "Core", items: ["Python", "Pandas", "NumPy", "scikit-learn"] },
+      { label: "Deep learning & NLP", items: ["PyTorch", "NLP", "RNNs", "Word2Vec"] },
+      { label: "LLMs & agents", items: ["LangChain", "LangGraph"] },
+    ],
   },
   {
     title: "Software Engineering",
-    items: ["Java", "Kotlin", "C#", "JavaScript", "TypeScript", "FastAPI", "Git & GitHub"],
-  },
-  {
-    title: "Currently Exploring",
-    items: ["Multi-agent systems", "Cybersecurity", "Rust"],
+    icon: "code",
+    blurb: "Writing clean software that works, and the APIs that put models in front of people.",
+    groups: [
+      { label: "Languages", items: ["Java", "Kotlin", "C#", "JavaScript", "TypeScript"] },
+      { label: "Backend & tools", items: ["FastAPI", "Git & GitHub"] },
+    ],
   },
 ];
 

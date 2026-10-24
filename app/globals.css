@@ -1,28 +1,19 @@
 @import "tailwindcss";
 @import "lenis/dist/lenis.css";
 
-/* Dark mode is switched by the "dark" class on <html> (see ThemeToggle) */
+/* The site is dark only. <html> always has the "dark" class, so "dark:" styles always apply. */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Site colors. Light mode first, dark (space) mode below. */
+/* Site colors: black and gold. A warm near-black (not pure black) with soft golden light
+   coming in from the side (components/StarLight.tsx). Gold is the main accent, pale gold the second. */
 :root {
-  --bg: #f3f6fd;
-  --fg: #0b1022;
-  --muted: #586179;
-  --card: rgba(255, 255, 255, 0.7);
-  --line: rgba(11, 16, 34, 0.1);
-  --accent: #2a4fd6;
-  --accent-2: #6d8dff;
-}
-
-.dark {
-  --bg: #03050d;
-  --fg: #e8edff;
-  --muted: #8b94b3;
-  --card: rgba(120, 150, 255, 0.04);
-  --line: rgba(140, 170, 255, 0.12);
-  --accent: #5b8cff;
-  --accent-2: #b4cbff;
+  --bg: #0b0a08; /* warm near-black */
+  --fg: #f5efe4; /* warm white */
+  --muted: #aaa294; /* warm grey for body text */
+  --card: rgba(255, 210, 140, 0.04);
+  --line: rgba(255, 215, 160, 0.13);
+  --accent: #f5c451; /* gold */
+  --accent-2: #ffe2b8; /* pale gold (same as the contact section) */
 }
 
 /* Lets Tailwind use the colors and fonts above, e.g. text-accent, bg-card, font-display */
@@ -48,7 +39,6 @@ html {
 body {
   background: var(--bg);
   color: var(--fg);
-  transition: background-color 0.6s ease, color 0.6s ease;
 }
 
 ::selection {
@@ -99,19 +89,9 @@ body {
   100% { transform: scale(1, 1); }
 }
 
-/* Spinning glowing ring of a small black hole (Let's talk button, theme switch) */
-.bh-ring {
-  background: conic-gradient(from 0deg, transparent 0 8%, #ff8a2a 18%, #ffe0b0 24%, transparent 38%, #ff7a1a 58%, #ffc988 64%, transparent 80%);
-  mask: radial-gradient(circle, transparent 36%, black 40%, black 58%, transparent 70%);
-  animation: spin 2.4s linear infinite;
-}
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+/* ---------- "Let's talk" transition (see ContactPanel) ---------- */
 
-/* ---------- Contact black hole effect (see ContactPanel) ---------- */
-
-/* The page (and fixed items like the navbar) get sucked into the black hole... */
+/* The page (and fixed items like the navbar) get pulled into the clicked button... */
 .is-sucking :is(.suck-page, .suck-fixed),
 .is-unsucking :is(.suck-page, .suck-fixed) {
   will-change: transform, opacity;
@@ -125,7 +105,7 @@ body {
   transform-origin: var(--bh-x) var(--bh-y);
 }
 .is-sucking :is(.suck-page, .suck-fixed) {
-  animation: suck 1s cubic-bezier(0.6, 0, 0.4, 1) forwards;
+  animation: suck 0.8s cubic-bezier(0.6, 0, 0.4, 1) forwards;
 }
 /* ...and come back out when the panel closes */
 .is-unsucking :is(.suck-page, .suck-fixed) {
@@ -136,15 +116,15 @@ body {
   to { transform: scale(0.02) rotate(40deg); opacity: 0; }
 }
 
-/* The black hole circle grows from the button to fill the screen */
-.bh-grow {
+/* The burst of light grows from the button to fill the screen */
+.burst-grow {
   transform: translate(-50%, -50%) scale(0);
-  animation: bh-grow 0.85s cubic-bezier(0.7, 0, 0.3, 1) 0.3s forwards;
+  animation: burst-grow 0.7s cubic-bezier(0.7, 0, 0.3, 1) 0.15s forwards;
 }
-.bh-shrink {
-  animation: bh-grow 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) reverse both;
+.burst-shrink {
+  animation: burst-grow 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) reverse both;
 }
-@keyframes bh-grow {
+@keyframes burst-grow {
   from { transform: translate(-50%, -50%) scale(0); }
   to { transform: translate(-50%, -50%) scale(1); }
 }
@@ -161,13 +141,37 @@ body {
   to { opacity: 1; transform: none; }
 }
 
-/* The black hole picture settles in with a slow twist */
-.bh-pull {
-  animation: bh-pull 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+/* The light beam scene settles in: starts bright and slightly zoomed, like eyes adjusting */
+.beam-in {
+  animation: beam-in 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
-@keyframes bh-pull {
-  from { transform: scale(1.3) rotate(-6deg); }
-  to { transform: none; }
+@keyframes beam-in {
+  from { transform: scale(1.15); filter: brightness(2.2); }
+  to { transform: none; filter: none; }
+}
+
+/* The light beam gently brightens and dims, like real light through dust */
+.beam-breathe {
+  animation: beam-breathe 7s ease-in-out infinite;
+}
+@keyframes beam-breathe {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+/* Film grain: fine moving noise over the light-beam scene */
+.film-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.22;
+  mix-blend-mode: overlay;
+  animation: grain 0.8s steps(4) infinite;
+}
+@keyframes grain {
+  0% { background-position: 0 0; }
+  25% { background-position: -40px 30px; }
+  50% { background-position: 50px -20px; }
+  75% { background-position: -20px -50px; }
+  100% { background-position: 0 0; }
 }
 
 /* Contact words rising into place (needs a parent with .rise-in or .is-visible) */
@@ -195,6 +199,59 @@ body {
   100% { transform: scaleY(0); transform-origin: bottom; }
 }
 
+/* Blinking cursor for the AI-style streaming line (StreamingLine) */
+.caret {
+  animation: caret 1s steps(1) infinite;
+}
+@keyframes caret {
+  50% { opacity: 0; }
+}
+
+/* Earth's horizon in the hero slowly rises into place when the page opens */
+.horizon-rise {
+  animation: horizon-rise 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes horizon-rise {
+  from { opacity: 0; transform: translateY(60px) scale(1.04); }
+  to { opacity: 1; transform: none; }
+}
+
+/* The hand in the light beam floats up and down very slightly */
+.hand-float {
+  animation: hand-float 8s ease-in-out infinite;
+}
+@keyframes hand-float {
+  0%, 100% { translate: 0 -50%; }
+  50% { translate: 0 calc(-50% - 8px); }
+}
+
+/* The star info card pops in */
+.star-card-in {
+  animation: star-card-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes star-card-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+
+/* The side light gently brightens and dims */
+.star-breathe {
+  animation: star-breathe 8s ease-in-out infinite;
+}
+@keyframes star-breathe {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+/* The waving photo in the footer sways gently from side to side */
+.wave-sway {
+  animation: wave-sway 3.2s ease-in-out infinite;
+}
+@keyframes wave-sway {
+  0%, 100% { transform: rotate(-1.5deg); }
+  50% { transform: rotate(1.5deg); }
+}
+
 /* People who turned on "reduce motion" get everything shown without animation */
 @media (prefers-reduced-motion: reduce) {
   .reveal,
@@ -210,9 +267,16 @@ body {
   }
   .panel-in,
   .panel-out,
-  .bh-pull,
-  .bh-ring,
+  .beam-in,
+  .beam-breathe,
+  .hand-float,
+  .star-card-in,
+  .star-breathe,
+  .wave-sway,
+  .film-grain,
   .scroll-line,
+  .caret,
+  .horizon-rise,
   .wobble:hover {
     animation: none;
   }

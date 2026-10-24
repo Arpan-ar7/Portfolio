@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import ThemeToggle from "./ThemeToggle";
 import LetsTalkButton from "./LetsTalkButton";
 
 // Links in the header. Each "href" matches a section id on the page.
@@ -14,7 +13,7 @@ const links = [
 
 /**
  * A minimal header that floats over the page — no bar, no line.
- * Left: logo + links. Right: theme switch + Let's talk.
+ * Left: logo + links. Right: Let's talk.
  * It slides away when you scroll down (so it never covers content)
  * and comes back as soon as you scroll up.
  */
@@ -37,7 +36,7 @@ export default function Navbar() {
     <header
       className={`suck-fixed fixed inset-x-0 top-0 z-50 transition-transform duration-500 ease-out ${hidden ? "-translate-y-full" : "translate-y-0"}`}
     >
-      {/* Full width: links on the left edge, Let's talk + theme switch on the right edge */}
+      {/* Full width: links on the left edge, Let's talk on the right edge */}
       <nav className="flex items-center justify-between px-6 py-5 sm:px-10">
         {/* Left: logo, then the section links (links hidden on phones to keep it clean) */}
         <div className="flex items-center gap-10">
@@ -59,11 +58,8 @@ export default function Navbar() {
           </ul>
         </div>
 
-        {/* Right: the theme switch, then Let's talk at the far right */}
-        <div className="flex items-center gap-5">
-          <ThemeToggle />
-          <LetsTalkButton variant="solid">Let&apos;s talk</LetsTalkButton>
-        </div>
+        {/* Right: Let's talk */}
+        <LetsTalkButton variant="solid">Let&apos;s talk</LetsTalkButton>
       </nav>
     </header>
   );

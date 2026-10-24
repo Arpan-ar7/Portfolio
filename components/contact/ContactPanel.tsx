@@ -1,18 +1,19 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import ContactContent from "./ContactContent";
-import BlackHoleBackdrop from "./BlackHoleBackdrop";
+import ContactContent, { AvailablePill } from "./ContactContent";
+import LightBeamBackdrop from "./LightBeamBackdrop";
 import { lockScroll } from "@/lib/smoothScroll";
 
 // How the contact screen opens and closes:
 //  "closed"   → nothing on screen
-//  "sucking"  → a black hole opens at the clicked button and swallows the page
-//  "open"     → the contact screen is shown (you're "inside" the black hole)
+//  "sucking"  → the page gets pulled into the clicked button, and a burst of warm light
+//               grows from there until it fills the screen
+//  "open"     → the contact screen is shown (a beam of light in the dark)
 //  "closing"  → the contact screen fades and the page comes back out
 type Phase = "closed" | "sucking" | "open" | "closing";
 
-const SUCK_MS = 1150; // keep in sync with the "bh-grow" animation in globals.css (0.3s delay + 0.85s)
+const SUCK_MS = 850; // keep in sync with the "burst-grow" animation in globals.css (0.15s delay + 0.7s)
 const RETURN_MS = 900; // keep in sync with the "unsuck" animation
 
 export default function ContactPanel() {
@@ -29,7 +30,7 @@ export default function ContactPanel() {
       const html = document.documentElement;
 
       lockScroll(true);
-      // Tell the CSS where the black hole is (screen position, and position on the whole page)
+      // Tell the CSS where the button is (screen position, and position on the whole page)
       html.style.setProperty("--bh-x", `${x}px`);
       html.style.setProperty("--bh-y", `${y}px`);
       html.style.setProperty("--bh-py", `${y + window.scrollY}px`);
@@ -38,7 +39,7 @@ export default function ContactPanel() {
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return setPhase("open");
 
       setOrigin({ x, y });
-      html.classList.add("is-sucking"); // page swirls into the hole (globals.css)
+      html.classList.add("is-sucking"); // page swirls into the button (globals.css)
       setPhase("sucking");
       timer.current = setTimeout(() => setPhase("open"), SUCK_MS);
     }
@@ -52,7 +53,7 @@ export default function ContactPanel() {
   const close = useCallback(() => {
     const html = document.documentElement;
     setPhase("closing");
-    // Page comes back out of the black hole
+    // Page comes back out
     html.classList.remove("is-sucking");
     html.classList.add("is-unsucking");
     timer.current = setTimeout(() => {
@@ -78,21 +79,22 @@ export default function ContactPanel() {
 
   return (
     <>
-      {/* The black hole itself: grows from the button until it fills the screen */}
+      {/* The burst of light: a warm glow grows from the button, its bright center
+          fading to black at the edge, until the whole screen is covered */}
       <div
         aria-hidden
-        className={`pointer-events-none fixed z-[89] rounded-full ${phase === "closing" ? "bh-shrink" : "bh-grow"}`}
+        className={`pointer-events-none fixed z-[89] rounded-full ${phase === "closing" ? "burst-shrink" : "burst-grow"}`}
         style={{
           left: origin.x,
           top: origin.y,
           width: size,
           height: size,
           background:
-            "radial-gradient(circle, #000 0%, #000 64%, #ff8a2a 67%, #ffd9a0 68.5%, rgba(255,140,40,0.35) 70%, rgba(0,0,0,0) 72%)",
+            "radial-gradient(circle, rgba(255,247,232,1) 0%, rgba(255,214,160,0.95) 12%, rgba(170,105,50,0.85) 30%, #000 55%)",
         }}
       />
 
-      {/* The contact screen, shown once the page has been swallowed */}
+      {/* The contact screen, shown once the light has filled the screen */}
       {(phase === "open" || phase === "closing") && (
         <div
           role="dialog"
@@ -100,14 +102,17 @@ export default function ContactPanel() {
           aria-label="Contact"
           className={`rise-in fixed inset-0 z-[90] overflow-hidden bg-black text-white ${phase === "open" ? "panel-in" : "panel-out"}`}
         >
-          <BlackHoleBackdrop className="bh-pull" />
+          <LightBeamBackdrop className="beam-in" />
           <div className="relative flex h-full flex-col p-6 sm:p-10">
-            {/* Top row: logo + close button */}
-            <div className="flex items-center justify-between">
+            {/* Top row: logo, availability, close button */}
+            <div className="flex items-center justify-between gap-4">
               <span className="font-display text-xl font-bold">AR7</span>
+              <span className="ml-auto">
+                <AvailablePill />
+              </span>
               <button
                 onClick={close}
-                className="wobble rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-[#a8c2ff]"
+                className="wobble rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-[#ffe2b8]"
               >
                 ✕ Close
               </button>

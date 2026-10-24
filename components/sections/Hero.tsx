@@ -1,91 +1,77 @@
+import Image from "next/image";
 import DottedPortrait from "../DottedPortrait";
 import Reveal from "../Reveal";
 import LetsTalkButton from "../LetsTalkButton";
 import LocalTime from "../LocalTime";
-import { profile } from "@/data/site";
+import StreamingLine from "../StreamingLine";
+import { profile, sky } from "@/data/site";
 
 /**
  * The first screen, laid out like an editorial magazine cover:
  *  - your dotted portrait in the middle, fading softly into the page
  *  - your name huge underneath, in an elegant serif
- *  - small mono labels in the corners and a bar along the bottom
- *  - faint vertical lines dividing the page into columns
+ *  - a quote that types itself out like an AI answer, and two buttons
+ *  - a small bar along the bottom (the live sky behind is NightSky, in layout.tsx)
+ *  - Earth's glowing horizon just under the buttons (the start of the "leaving Earth" journey)
+ *
+ * The section is exactly one screen tall, and the portrait and name shrink on short
+ * screens, so the horizon and buttons are always visible without scrolling.
  */
 export default function Hero() {
   return (
-    <section id="top" className="relative flex min-h-screen flex-col px-6 pt-24 sm:px-10">
-      {/* Faint vertical column lines (desktop only) */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 hidden lg:block">
-        <span className="absolute inset-y-0 left-[18%] w-px bg-line" />
-        <span className="absolute inset-y-0 right-[18%] w-px bg-line" />
+    <section id="top" className="relative flex h-svh min-h-[36rem] flex-col px-6 pt-24 sm:px-10">
+      {/* Earth's horizon. The picture is as wide as the screen, and moved so that
+          its glowing curve (40% down the picture) lands just under the buttons. Faded on all sides. */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 hidden overflow-hidden dark:block">
+        <div
+          className="horizon-rise absolute inset-x-0 mix-blend-screen top-[calc(100%-96px-23.8vw)] aspect-[588/350] [mask-image:linear-gradient(to_bottom,transparent_30%,black_39%,black_43%,transparent_49%),linear-gradient(to_right,transparent,black_15%,black_85%,transparent)] [mask-composite:intersect]"
+        >
+          <Image src="/media/earth-horizon-gold.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
+        </div>
       </div>
-
-      {/* Top corner labels */}
-      <div className="relative z-10 flex items-start justify-between font-mono text-[10px] tracking-[0.25em] uppercase sm:text-[11px]">
-        <Reveal>
-          <span className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-            <span className="bg-accent px-1.5 py-0.5 text-bg">AI/ML. Software. Space.</span>
-          </span>
-        </Reveal>
-        <Reveal delay={100} className="hidden text-muted sm:block">
-          Based in India · Looking up
-        </Reveal>
-      </div>
-
-      {/* Left rail: a small index, like a magazine (desktop only) */}
-      <Reveal delay={200} className="absolute top-[38%] left-10 z-10 hidden font-mono text-[10px] tracking-[0.25em] text-muted uppercase lg:block">
-        <p className="text-accent">01 / Origin</p>
-        <p className="mt-8 text-lg leading-none text-accent">+</p>
-        <ul className="mt-3 space-y-2">
-          <li>Machine learning</li>
-          <li>Software</li>
-          <li>The cosmos</li>
-        </ul>
-      </Reveal>
 
       {/* Center: portrait, then the big name, then a line and the buttons */}
       <div className="relative flex flex-1 flex-col items-center justify-end pb-28 text-center">
         {/* The portrait sits behind the top of the name */}
-        <div className="depth-2 relative -mb-16 aspect-square w-[min(80vw,26rem)] sm:-mb-20">
+        <div className="depth-2 relative -mb-16 aspect-square w-[min(85vw,32rem,54vh)] sm:-mb-24">
           <DottedPortrait src="/me/arpan-cutout.png" alt={`Dotted portrait of ${profile.name}`} />
         </div>
 
-        <Reveal delay={150} className="relative z-10">
-          <p className="font-mono text-[10px] tracking-[0.35em] text-muted uppercase sm:text-xs">
-            A curious mind in AI &amp; the universe
-          </p>
-        </Reveal>
-
-        {/* The name: one word upright, one in italics */}
+        {/* The full name: first two words upright, surname in italics */}
         <Reveal delay={250} className="depth-1 relative z-10">
-          <h1 className="mt-3 font-serif text-[clamp(3.5rem,11vw,10rem)] leading-[0.9] tracking-tight">
-            Arpan <span className="bg-gradient-to-r from-accent to-accent-2 bg-clip-text pr-2 text-transparent italic">Panda</span>
+          <h1 className="mt-3 font-serif text-[clamp(3rem,min(8.5vw,12vh),8rem)] leading-[0.9] tracking-tight">
+            Arpan Kumar <span className="bg-gradient-to-r from-accent to-accent-2 bg-clip-text pr-2 text-transparent italic">Panda</span>
           </h1>
         </Reveal>
 
-        <Reveal delay={400} className="relative z-10">
-          <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-muted sm:text-lg">{profile.heroLine}</p>
-        </Reveal>
+        {/* The quote "generates" word by word, like an AI answer */}
+        <StreamingLine
+          text={profile.heroLine}
+          className="relative z-10 mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg"
+        />
 
         <Reveal delay={500} className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4">
           <a
             href="#projects"
-            className="wobble flex items-center gap-3 rounded-full border border-line bg-card px-6 py-3 text-sm font-medium transition-colors hover:border-accent"
+            className="wobble flex items-center gap-3 rounded-full border border-line bg-card px-6 py-3 text-sm font-medium backdrop-blur-md transition-colors hover:border-accent dark:bg-black/55"
           >
             Explore my work <span aria-hidden>↓</span>
           </a>
-          {/* Black hole appears inside on hover; click = get sucked into the contact screen */}
+          {/* Light sweeps across on hover; click = the page gets pulled into a burst of light (contact screen) */}
           <LetsTalkButton variant="outline">Let&apos;s connect</LetsTalkButton>
         </Reveal>
       </div>
 
       {/* Bottom bar */}
-      <div className="absolute inset-x-6 bottom-6 z-10 flex items-center justify-between font-mono text-[10px] tracking-[0.25em] text-muted uppercase sm:inset-x-10">
+      <div className="absolute inset-x-6 bottom-6 z-10 flex items-center justify-between font-mono text-[10px] tracking-[0.25em] text-muted uppercase sm:inset-x-10 dark:[text-shadow:0_1px_6px_rgba(0,0,0,0.95)]">
         <span className="flex items-center gap-3">
           <span className="scroll-line block h-6 w-px bg-accent" /> Scroll to explore
         </span>
-        <span className="hidden md:block">B.Tech CSE · {profile.university}</span>
+        {/* The background is the real sky over this place, right now */}
+        <span className="hidden items-center gap-2 rounded-full px-3 py-1.5 md:dark:flex dark:bg-black/60 dark:backdrop-blur-md">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
+          Live sky over {sky.place} · hover a star
+        </span>
         <span className="hidden sm:block">
           <LocalTime />
         </span>
