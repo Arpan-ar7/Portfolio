@@ -26,6 +26,7 @@ export type Project = {
   link?: string; // the GitHub repo. Leave it out while the code isn't public yet.
   demo?: string; // a live demo (Hugging Face Space, Streamlit, Vercel...). Leave it out if there isn't one.
   images?: ProjectImage[]; // photos shown when someone opens the project. The first one is also shown on its screen.
+  logo?: { src: string; alt: string }; // the project's own logo (square image), shown next to its name
 };
 
 // Every number here should come from the project's own notebook or app, measured on data the
@@ -145,11 +146,30 @@ export const projects: Project[] = [
     link: "https://github.com/Arpan-ar7/CampusSphere",
   },
   {
-    title: "Cafe Ordering App",
+    title: "ReciPIE",
     category: "Android app",
     description:
-      "An Android app for ordering at a cafe: browse the menu by category, add, change or remove items in the cart, see the order summary and place the order.",
-    tags: ["Kotlin", "Android"],
-    link: "https://github.com/Arpan-ar7/CafeOrderingApp",
+      "An Android app that helps you cook with what's already in your kitchen. Snap a photo of your fridge, AI spots the ingredients, and you get a full recipe in seconds: time, servings, steps and a chef's tip.",
+    highlights: [
+      "AI photo scan: a vision model (Gemini 2.5 Flash via OpenRouter) lists the ingredients it sees; untick any you don't want",
+      "Cook Mode: one big step at a time, swipe between steps, and the screen stays on while you cook",
+      "Every recipe saved offline in SQLite: search, favourite, share, or cook it again later",
+      "Local accounts with passwords hashed using PBKDF2 and a random salt",
+    ],
+    tags: ["Kotlin", "Android", "Material 3", "SQLite", "Coroutines", "OpenRouter (Gemini)"],
+    link: "https://github.com/Arpan-ar7/Recipe_app",
+    logo: { src: "/projects/recipie-logo.png", alt: "ReciPIE logo" },
+    // Phone screenshots (tall images are shown side by side in the details window)
+    images: [
+      { src: "/projects/recipie-home.png", alt: "ReciPIE home screen", width: 640, height: 1428, caption: "Home" },
+      {
+        src: "/projects/recipie-ai-ingredients.png",
+        alt: "ReciPIE after a photo scan: the ingredients the AI found, shown as chips",
+        width: 640,
+        height: 1428,
+        caption: "AI found the ingredients",
+      },
+      { src: "/projects/recipie-recipe.png", alt: "A recipe made by ReciPIE from a fridge photo", width: 640, height: 1428, caption: "The recipe" },
+    ],
   },
 ];

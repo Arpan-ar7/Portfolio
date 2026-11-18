@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import type { Project } from "@/data/site";
+import type { Project, ProjectImage } from "@/data/site";
 import { lockScroll } from "@/lib/smoothScroll";
 import { shareOf, shortLink, twoDigits } from "@/lib/format";
 import { GitHubIcon } from "@/components/ui/icons";
@@ -45,6 +45,9 @@ export default function ProjectDetails({
   }, [onClose]);
 
   const share = project.metric ? shareOf(project.metric.value) : null;
+  const images = project.images ?? [];
+  const wide = images.filter((img) => img.width >= img.height);
+  const tall = images.filter((img) => img.width < img.height);
 
   // Drawn straight into <body>, so nothing on the page (like the 3D orbit) can get in its way
   return createPortal(
@@ -86,25 +89,28 @@ export default function ProjectDetails({
         </div>
 
         <div className="px-5 py-6 sm:px-8 sm:py-8">
-          <h3 className="font-display text-2xl leading-tight font-bold tracking-tight sm:text-4xl">{project.title}</h3>
+          {/* The name, with the project's logo in front of it if it has one */}
+          <h3 className="flex items-center gap-4 font-display text-2xl leading-tight font-bold tracking-tight sm:text-4xl">
+            {project.logo && (
+              <Image src={project.logo.src} alt={project.logo.alt} width={56} height={56} className="h-12 w-12 shrink-0 rounded-xl sm:h-14 sm:w-14" />
+            )}
+            {project.title}
+          </h3>
           <p className="mt-4 leading-relaxed text-muted sm:text-lg">{project.description}</p>
 
-          {/* Photos: big, one under the other, with a caption */}
-          {project.images && project.images.length > 0 && (
+          {/* Photos. Wide ones (like screenshots of a website) are big, one under the other.
+              Tall ones (like phone screenshots) sit side by side, three in a row. */}
+          {wide.length > 0 && (
             <div className="mt-7 space-y-6">
-              {project.images.map((img) => (
-                <figure key={img.src}>
-                  <a
-                    href={img.src}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="block overflow-hidden rounded-xl border border-line transition-colors hover:border-fg/60"
-                    aria-label={`Open full size: ${img.alt}`}
-                  >
-                    <Image src={img.src} alt={img.alt} width={img.width} height={img.height} sizes="(min-width: 896px) 830px, 94vw" className="h-auto w-full" />
-                  </a>
-                  {img.caption && <figcaption className="mt-2 font-mono text-[11px] text-muted">{img.caption}</figcaption>}
-                </figure>
+              {wide.map((img) => (
+                <Photo key={img.src} img={img} sizes="(min-width: 896px) 830px, 94vw" />
+              ))}
+            </div>
+          )}
+          {tall.length > 0 && (
+            <div className="mt-7 grid grid-cols-3 gap-3 sm:gap-5">
+              {tall.map((img) => (
+                <Photo key={img.src} img={img} sizes="(min-width: 896px) 270px, 30vw" />
               ))}
             </div>
           )}
@@ -189,5 +195,23 @@ export default function ProjectDetails({
       </div>
     </div>,
     document.body
+  );
+}
+
+/** One photo with its caption. Click it to open it full size in a new tab. */
+function Photo({ img, sizes }: { img: ProjectImage; sizes: string }) {
+  return (
+    <figure>
+      <a
+        href={img.src}
+        target="_blank"
+        rel="noreferrer"
+        className="block overflow-hidden rounded-xl border border-line transition-colors hover:border-fg/60"
+        aria-label={`Open full size: ${img.alt}`}
+      >
+        <Image src={img.src} alt={img.alt} width={img.width} height={img.height} sizes={sizes} className="h-auto w-full" />
+      </a>
+      {img.caption && <figcaption className="mt-2 font-mono text-[11px] text-muted">{img.caption}</figcaption>}
+    </figure>
   );
 }

@@ -6,7 +6,7 @@ import MiniChart from "./MiniChart";
 /**
  * One glowing project screen on the orbit (see ProjectOrbit): a window bar with the repo
  * address, the project's type, its big name (with a slight red/blue edge, like a monitor),
- * the project's first photo (or a small chart if it has none), and its stack and result.
+ * the project's logo or first photo (or a small chart if it has neither), and its stack and result.
  * Scan lines run across it like an old display.
  * It's smaller on phones and tablets (the classes without "xl:"), and full size on big screens.
  */
@@ -69,9 +69,14 @@ export default function OrbitScreen({
           </span>
         </span>
 
-        {/* Right side: the project's photo, or a small chart if it has none */}
+        {/* Right side: the project's logo if it has one, otherwise its first photo,
+            otherwise a small chart */}
         <span aria-hidden className="flex w-20 shrink-0 items-center md:w-32 xl:w-40">
-          {photo ? (
+          {project.logo ? (
+            <span className="relative mx-auto block aspect-square w-[85%] overflow-hidden rounded-2xl border-2" style={{ borderColor: `${color}88` }}>
+              <Image src={project.logo.src} alt="" fill sizes="140px" className="object-cover" />
+            </span>
+          ) : photo ? (
             <span className="relative block aspect-[4/3] w-full overflow-hidden rounded-lg border" style={{ borderColor: `${color}88` }}>
               <Image src={photo.src} alt="" fill sizes="160px" className="object-cover object-top" />
             </span>
