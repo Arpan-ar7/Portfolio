@@ -7,7 +7,7 @@ import { lockScroll } from "@/lib/smoothScroll";
 
 // How the contact screen opens and closes:
 //  "closed"   → nothing on screen
-//  "sucking"  → the page gets pulled into the clicked button, and a burst of warm light
+//  "sucking"  → the page gets pulled into the clicked button, and a burst of blue light
 //               grows from there until it fills the screen
 //  "open"     → the contact screen is shown (a beam of light in the dark)
 //  "closing"  → the contact screen fades and the page comes back out
@@ -34,6 +34,10 @@ export default function ContactPanel() {
       html.style.setProperty("--bh-x", `${x}px`);
       html.style.setProperty("--bh-y", `${y}px`);
       html.style.setProperty("--bh-py", `${y + window.scrollY}px`);
+      // How much of the page is above and below the screen right now. The CSS cuts those
+      // parts away during the animation, so only what's on screen has to be drawn.
+      html.style.setProperty("--bh-top", `${window.scrollY}px`);
+      html.style.setProperty("--bh-bottom", `${Math.max(0, html.scrollHeight - window.scrollY - window.innerHeight)}px`);
 
       // Reduced motion: skip the effect and show the contact screen straight away
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return setPhase("open");
@@ -79,7 +83,7 @@ export default function ContactPanel() {
 
   return (
     <>
-      {/* The burst of light: a warm glow grows from the button, its bright center
+      {/* The burst of light: a blue glow grows from the button, its bright center
           fading to black at the edge, until the whole screen is covered */}
       <div
         aria-hidden
@@ -87,10 +91,11 @@ export default function ContactPanel() {
         style={{
           left: origin.x,
           top: origin.y,
-          width: size,
-          height: size,
+          // drawn at 1/8 size and stretched 8x by the animation (see .burst-grow in globals.css)
+          width: size / 8,
+          height: size / 8,
           background:
-            "radial-gradient(circle, rgba(255,247,232,1) 0%, rgba(255,214,160,0.95) 12%, rgba(170,105,50,0.85) 30%, #000 55%)",
+            "radial-gradient(circle, rgba(235,243,255,1) 0%, rgba(140,185,255,0.95) 12%, rgba(40,80,170,0.85) 30%, #000 55%)",
         }}
       />
 
@@ -112,7 +117,7 @@ export default function ContactPanel() {
               </span>
               <button
                 onClick={close}
-                className="wobble rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-[#ffe2b8]"
+                className="wobble rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-[#a9c9ff]"
               >
                 ✕ Close
               </button>

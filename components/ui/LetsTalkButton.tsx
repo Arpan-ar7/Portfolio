@@ -2,7 +2,7 @@
 
 /**
  * The "Let's talk" / "Let's connect" button.
- *  - Hover: it wobbles like jelly, and a streak of warm light sweeps across it.
+ *  - Hover: it wobbles like jelly, and a streak of light sweeps across it.
  *  - Click: tells ContactPanel to open — the page gets pulled into a burst of light
  *    at this button's position, and you land on the contact screen.
  */
@@ -22,18 +22,18 @@ export default function LetsTalkButton({
   const look =
     variant === "solid"
       ? "bg-accent text-bg"
-      : "border border-line text-fg dark:bg-black/55 dark:backdrop-blur-md"; // outline style used in the hero (dark glass so it reads over the Earth picture)
+      : "border border-line bg-card text-fg hover:border-accent/70"; // outline style used in the hero: a solid dark button with a thin line around it
 
   return (
     <button
       type="button"
       onClick={open}
-      className={`wobble group relative isolate overflow-hidden rounded-full px-5 py-2.5 text-sm font-medium transition-shadow duration-300 hover:shadow-[0_0_24px_rgba(255,200,130,0.35)] ${look}`}
+      className={`wobble group relative isolate overflow-hidden rounded-full px-5 py-2.5 text-sm font-medium transition-[box-shadow,border-color] duration-300 hover:shadow-[0_0_24px_rgba(91,155,255,0.45)] ${look}`}
     >
-      {/* A streak of warm light that sweeps across on hover */}
+      {/* A streak of light that sweeps across on hover */}
       <span
         aria-hidden
-        className="absolute inset-y-0 -left-1/2 -z-10 w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-[rgba(255,226,180,0.55)] to-transparent opacity-0 transition-all duration-700 ease-out group-hover:left-full group-hover:opacity-100"
+        className="absolute inset-y-0 -left-1/2 -z-10 w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-[rgba(255,255,255,0.5)] to-transparent opacity-0 transition-all duration-700 ease-out group-hover:left-full group-hover:opacity-100"
       />
       <span className="flex items-center gap-1.5">
         {children}

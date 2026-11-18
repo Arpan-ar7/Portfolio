@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { isContactOpen, pageTop } from "@/lib/dom";
 
 /**
- * Draws a photo as a halftone dot portrait (like a magazine print) that fades softly into the page.
- *  - Dark mode: light dots — brighter parts of the photo get bigger dots.
- *  - Light mode: dark blue "ink" dots — darker parts get bigger dots.
+ * Draws a photo as a portrait made of dots, like data points on a plot, fading softly into the page.
+ * Light dots on the dark page: brighter parts of the photo get bigger dots.
  *
- *  - On load: the dots start as tiny specks spread out like stars, then gather
+ *  - On load: the dots start as tiny scattered points, then gather
  *    in a wave and assemble into the photo.
- *  - Scrolling down: the dots scatter out into space.
+ *  - Scrolling down: the dots scatter away.
  *  - Scrolling back up: they come back together.
  *  - Hovering: dots near the mouse get gently pushed aside and float back. The push fades
  *    off smoothly with distance, so it ripples the portrait without leaving an empty ring.
@@ -33,7 +33,7 @@ export default function DottedPortrait({ src, alt }: { src: string; alt: string 
     type Dot = {
       ox: number; oy: number; // home position (in the photo)
       sx: number; sy: number; // where it flies to when scattered
-      ix: number; iy: number; // where it starts before the intro (its "star" position)
+      ix: number; iy: number; // where it starts before the intro (a random scattered spot)
       delay: number; // 0-0.45: when this dot starts gathering in the intro (makes a wave)
       hx: number; hy: number; // extra offset from the mouse push
       r: number;
@@ -45,7 +45,7 @@ export default function DottedPortrait({ src, alt }: { src: string; alt: string 
     let height = 0;
     let frame = 0;
 
-    // Assemble-on-load animation: introT goes from 0 (stars spread out) to 1 (assembled)
+    // Assemble-on-load animation: introT goes from 0 (points spread out) to 1 (assembled)
     const INTRO_MS = 2600;
     let introStart: number | null = null;
     let introT = reduceMotion ? 1 : 0;
@@ -66,6 +66,9 @@ export default function DottedPortrait({ src, alt }: { src: string; alt: string 
       const offX = (width - size) / 2; // where the circle starts inside the big canvas
       const offY = (height - size) / 2;
       const cols = Math.floor(size / GAP);
+      // Nothing to draw while the portrait has no size (e.g. hidden, or mid-resize/rotation).
+      // Without this, reading a 0×0 picture below throws an error.
+      if (cols <= 0) return;
 
       // Shrink the photo to one pixel per dot and read the colors
       const sample = document.createElement("canvas");
@@ -80,7 +83,6 @@ export default function DottedPortrait({ src, alt }: { src: string; alt: string 
       const alphaAt = (c: number, r: number) =>
         c < 0 || r < 0 || c >= cols || r >= cols ? 0 : pixels[(r * cols + c) * 4 + 3] / 255;
 
-      const dark = document.documentElement.classList.contains("dark");
       const body: Dot[] = []; // normal dots
       const rim: Dot[] = []; // dots along the outline, colored like a rim light
       const center = size / 2;
@@ -98,9 +100,8 @@ export default function DottedPortrait({ src, alt }: { src: string; alt: string 
           // How bright this spot of the photo is (0 = black, 1 = white), slightly brightened
           const i = (row * cols + col) * 4;
           const light = Math.min(1, ((pixels[i] * 0.3 + pixels[i + 1] * 0.59 + pixels[i + 2] * 0.11) / 255) * 1.25);
-          // Dark mode: bright = big dot. Light mode: dark = big dot (like ink on paper).
-          // Stretch the contrast so the face stands out from the shirt
-          const raw = Math.min(1, Math.max(0, ((dark ? light : 1 - light) - 0.15) / 0.7));
+          // Bright = big dot. Stretch the contrast so the face stands out from the shirt
+          const raw = Math.min(1, Math.max(0, (light - 0.15) / 0.7));
           const tone = Math.pow(raw, 0.85) * fade;
           if (tone < 0.05) continue;
 
@@ -116,7 +117,7 @@ export default function DottedPortrait({ src, alt }: { src: string; alt: string 
             oy: offY + y,
             sx: Math.cos(angle) * flyDist,
             sy: Math.sin(angle) * flyDist - size * 0.3 * Math.random(), // drift a bit upward
-            // intro start: a random spot anywhere in the big canvas, like a star in the sky
+            // intro start: a random spot anywhere in the big canvas
             ix: Math.random() * width - (offX + x),
             iy: Math.random() * height - (offY + y),
             // dots near the face gather first, the edges a little later
@@ -128,10 +129,10 @@ export default function DottedPortrait({ src, alt }: { src: string; alt: string 
           (onEdge ? rim : body).push(dot);
         }
       }
-      // Body dots: warm white. Outline: the gold accent, like a rim light from the star.
+      // Body dots: cool white. Outline: the blue accent, like a rim light.
       groups = [
-        { color: dark ? "#f3ece0" : "#16224f", dots: body },
-        { color: dark ? "#f5c451" : "#a8741a", dots: rim },
+        { color: "#e6ecf5", dots: body },
+        { color: "#5b9bff", dots: rim },
       ];
       allDots = [...body, ...rim];
       request();
@@ -139,9 +140,10 @@ export default function DottedPortrait({ src, alt }: { src: string; alt: string 
 
     // How scattered the portrait should be from scrolling: 0 = whole, 1 = fully scattered
     function scrollProgress() {
-      const rect = box.getBoundingClientRect();
+      // Where the portrait's top is on the screen right now (see pageTop in lib/dom.ts)
+      const top = pageTop(box) - window.scrollY;
       // starts once the portrait's top nears the top of the screen
-      const p = (20 - rect.top) / rect.height;
+      const p = (20 - top) / (box.offsetHeight || 1);
       return Math.min(1, Math.max(0, p));
     }
 
@@ -182,18 +184,18 @@ export default function DottedPortrait({ src, alt }: { src: string; alt: string 
 
       // Draw: one path per color group
       ctx.clearRect(0, 0, width, height);
-      // during the intro everything brightens as the stars gather
+      // during the intro everything brightens as the points gather
       ctx.globalAlpha = (1 - e * 0.8) * (intro ? 0.45 + 0.55 * introT : 1);
       for (const group of groups) {
         ctx.fillStyle = group.color;
         ctx.beginPath();
         for (const d of group.dots) {
-          // how far along this dot's own trip is (0 = still a star, 1 = home)
+          // how far along this dot's own trip is (0 = still scattered, 1 = home)
           const q = intro ? Math.min(1, Math.max(0, (introT - d.delay) / 0.55)) : 1;
           const k = Math.pow(1 - q, 3); // ease-out: fast at first, gentle landing
           const x = d.ox + d.hx + d.sx * e + d.ix * k;
           const y = d.oy + d.hy + d.sy * e + d.iy * k;
-          const r = d.r * (1 - e * 0.5) * (1 - k * 0.7); // small like a star while flying
+          const r = d.r * (1 - e * 0.5) * (1 - k * 0.7); // smaller while flying
           ctx.moveTo(x + r, y);
           ctx.arc(x, y, r, 0, Math.PI * 2);
         }
@@ -209,6 +211,11 @@ export default function DottedPortrait({ src, alt }: { src: string; alt: string 
     }
 
     function onMove(e: MouseEvent) {
+      // Ignore the mouse while the contact screen is up: the portrait isn't really there
+      if (isContactOpen()) {
+        mouse.inside = false;
+        return;
+      }
       const rect = canvas.getBoundingClientRect();
       const boxRect = box.getBoundingClientRect();
       mouse.x = e.clientX - rect.left;
@@ -229,12 +236,6 @@ export default function DottedPortrait({ src, alt }: { src: string; alt: string 
       if (img.complete) build();
     }
 
-    // Rebuild the dots when the theme changes (light and dark use different dots)
-    const themeWatcher = new MutationObserver(() => {
-      if (img.complete) build();
-    });
-    themeWatcher.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-
     img.onload = () => {
       build();
       // Assemble shortly after the photo loads
@@ -245,7 +246,6 @@ export default function DottedPortrait({ src, alt }: { src: string; alt: string 
     window.addEventListener("resize", onResize);
     return () => {
       img.onload = null;
-      themeWatcher.disconnect();
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", request);
       window.removeEventListener("mousemove", onMove);
@@ -255,9 +255,7 @@ export default function DottedPortrait({ src, alt }: { src: string; alt: string 
 
   return (
     <div ref={boxRef} className="relative h-full w-full">
-      {/* Soft patch of page color behind the head, so background stars don't show through the face */}
-      <div className="absolute inset-[10%] rounded-full bg-[radial-gradient(circle,var(--bg)_35%,transparent_70%)]" />
-      {/* The canvas is bigger than the circle (80% extra on each side) so dots can fly out */}
+      {/* The canvas is bigger than the portrait (80% extra on each side) so dots can fly out */}
       <canvas
         ref={canvasRef}
         role="img"

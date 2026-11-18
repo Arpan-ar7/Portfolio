@@ -23,9 +23,28 @@ export function scrollToTop() {
   else window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+/** Smoothly scroll to a position on the page (y = pixels from the top). */
+export function scrollToY(y: number) {
+  if (lenis) lenis.scrollTo(y, { duration: 1.2 });
+  else window.scrollTo({ top: y, behavior: "smooth" });
+}
+
 /** Freeze / unfreeze page scrolling (used while the contact panel is open). */
 export function lockScroll(locked: boolean) {
   if (locked) lenis?.stop();
   else lenis?.start();
-  document.documentElement.style.overflow = locked ? "hidden" : "";
+  // We don't hide the scrollbar (overflow: hidden) to do this: when the scrollbar disappears
+  // the whole page gets a bit wider and jumps sideways, right as the transition starts.
+  // Instead: remember where the page is, and if anything still scrolls it (e.g. the arrow
+  // keys), put it straight back.
+  window.removeEventListener("scroll", holdInPlace);
+  if (locked) {
+    lockedAt = window.scrollY;
+    window.addEventListener("scroll", holdInPlace);
+  }
+}
+
+let lockedAt = 0;
+function holdInPlace() {
+  if (window.scrollY !== lockedAt) window.scrollTo(0, lockedAt);
 }

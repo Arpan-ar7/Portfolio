@@ -1,19 +1,20 @@
 @import "tailwindcss";
 @import "lenis/dist/lenis.css";
 
-/* The site is dark only. <html> always has the "dark" class, so "dark:" styles always apply. */
-@custom-variant dark (&:where(.dark, .dark *));
-
-/* Site colors: black and gold. A warm near-black (not pure black) with soft golden light
-   coming in from the side (components/StarLight.tsx). Gold is the main accent, pale gold the second. */
+/* Site colors: near-black and electric blue.
+   Everything is SOLID: no see-through or blurred ("glass") surfaces. A panel is just a slightly
+   lighter block with a thin line around it.
+   The contact section keeps its own colors (written in components/contact/ and sections/Contact.tsx).
+   One exception: the "Send me feedback" button in the footer stays pale gold on purpose. */
 :root {
-  --bg: #0b0a08; /* warm near-black */
-  --fg: #f5efe4; /* warm white */
-  --muted: #aaa294; /* warm grey for body text */
-  --card: rgba(255, 210, 140, 0.04);
-  --line: rgba(255, 215, 160, 0.13);
-  --accent: #f5c451; /* gold */
-  --accent-2: #ffe2b8; /* pale gold (same as the contact section) */
+  --bg: #07090d; /* the page: cool near-black */
+  --fg: #eef2f8; /* soft cool white */
+  --muted: #9aa3b2; /* blue-grey for body text */
+  --card: #0c1118; /* panels (cards, the photo frame) */
+  --card-2: #131a26; /* small things that sit on a panel (skill chips, bar tracks) */
+  --line: #1e2838; /* thin lines and borders */
+  --accent: #5b9bff; /* blue */
+  --accent-2: #a9c9ff; /* pale blue */
 }
 
 /* Lets Tailwind use the colors and fonts above, e.g. text-accent, bg-card, font-display */
@@ -22,6 +23,7 @@
   --color-fg: var(--fg);
   --color-muted: var(--muted);
   --color-card: var(--card);
+  --color-card-2: var(--card-2);
   --color-line: var(--line);
   --color-accent: var(--accent);
   --color-accent-2: var(--accent-2);
@@ -29,11 +31,25 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-display: var(--font-space-grotesk);
-  --font-serif: var(--font-instrument-serif);
+}
+
+/* One extra screen size on top of Tailwind's own (sm, md, lg, xl, 2xl):
+   "3xl" = very wide screens, 1700px and up (e.g. a 1920px monitor).
+   It's used like the others, e.g. 3xl:grid-cols-4. */
+@theme {
+  --breakpoint-3xl: 106.25rem;
 }
 
 html {
   overflow-x: clip;
+}
+/* While the contact screen is open, scrolling is paused. The smooth-scroll library (Lenis)
+   would hide the scrollbar then, which makes the page a bit wider and jump sideways just as
+   the transition starts. So this keeps the scrollbar exactly as it was.
+   (lockScroll in lib/smoothScroll.ts stops the page from actually moving.) */
+html.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 body {
@@ -46,12 +62,21 @@ body {
   color: var(--bg);
 }
 
-/* Elements that drift a little with the mouse (--mx / --my come from lib/pointer.ts) */
-.depth-1 {
-  translate: calc(var(--mx, 0) * -8px) calc(var(--my, 0) * -6px);
+/* How wide the page's content is. The navbar and every section use this one class, so their
+   left and right edges always line up. The content runs from edge to edge, with a small gap
+   at the sides (24px on phones, 40px on bigger screens). It only stops growing on very big
+   monitors (wider than 1920px), where it stays in the middle.
+   To make the whole site narrower again, lower max-width below (the old value was 1152px). */
+.page-width {
+  width: 100%;
+  max-width: 1920px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
 }
-.depth-2 {
-  translate: calc(var(--mx, 0) * 14px) calc(var(--my, 0) * 10px);
+@media (min-width: 640px) {
+  .page-width {
+    padding-inline: 2.5rem;
+  }
 }
 
 /* <Reveal>: fade + slide up when scrolled into view */
@@ -76,7 +101,7 @@ body {
   transform: none;
 }
 
-/* Jelly wobble on hover (buttons) */
+/* Jelly wobble on hover, for buttons */
 .wobble:hover {
   animation: wobble 0.7s ease;
 }
@@ -99,6 +124,11 @@ body {
 .is-sucking .suck-page,
 .is-unsucking .suck-page {
   transform-origin: var(--bh-x) var(--bh-py);
+  /* Only the part of the page that's on screen takes part in the animation. Everything
+     above and below it is cut away (--bh-top / --bh-bottom are set by ContactPanel).
+     Without this the browser has to draw the WHOLE long page as it shrinks, which made
+     the transition lag. */
+  clip-path: inset(var(--bh-top, 0px) 0 var(--bh-bottom, 0px) 0);
 }
 .is-sucking .suck-fixed,
 .is-unsucking .suck-fixed {
@@ -116,7 +146,13 @@ body {
   to { transform: scale(0.02) rotate(40deg); opacity: 0; }
 }
 
-/* The burst of light grows from the button to fill the screen */
+/* The burst of light grows from the button to fill the screen.
+   The circle is drawn small (1/8 of the size it needs, see ContactPanel) and stretched 8x,
+   so the browser only has to paint a small picture. It's a soft glow, so it looks the same. */
+.burst-grow,
+.burst-shrink {
+  will-change: transform;
+}
 .burst-grow {
   transform: translate(-50%, -50%) scale(0);
   animation: burst-grow 0.7s cubic-bezier(0.7, 0, 0.3, 1) 0.15s forwards;
@@ -126,7 +162,7 @@ body {
 }
 @keyframes burst-grow {
   from { transform: translate(-50%, -50%) scale(0); }
-  to { transform: translate(-50%, -50%) scale(1); }
+  to { transform: translate(-50%, -50%) scale(8); }
 }
 
 /* The contact screen fades in / out */
@@ -141,22 +177,15 @@ body {
   to { opacity: 1; transform: none; }
 }
 
-/* The light beam scene settles in: starts bright and slightly zoomed, like eyes adjusting */
+/* The light beam scene settles in: starts slightly zoomed and eases into place.
+   (It used to start extra bright too, but brightening the whole blurred scene on every
+   frame was the heaviest part of the transition, so only the zoom is animated now.) */
 .beam-in {
   animation: beam-in 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 @keyframes beam-in {
-  from { transform: scale(1.15); filter: brightness(2.2); }
-  to { transform: none; filter: none; }
-}
-
-/* The light beam gently brightens and dims, like real light through dust */
-.beam-breathe {
-  animation: beam-breathe 7s ease-in-out infinite;
-}
-@keyframes beam-breathe {
-  0%, 100% { opacity: 0.85; }
-  50% { opacity: 1; }
+  from { transform: scale(1.15); }
+  to { transform: none; }
 }
 
 /* Film grain: fine moving noise over the light-beam scene */
@@ -188,32 +217,12 @@ body {
   to { opacity: 1; transform: none; }
 }
 
-/* "Scroll to explore" line at the bottom of the hero */
-.scroll-line {
-  animation: scroll-line 2s ease-in-out infinite;
-}
-@keyframes scroll-line {
-  0% { transform: scaleY(0); transform-origin: top; }
-  50% { transform: scaleY(1); transform-origin: top; }
-  51% { transform: scaleY(1); transform-origin: bottom; }
-  100% { transform: scaleY(0); transform-origin: bottom; }
-}
-
 /* Blinking cursor for the AI-style streaming line (StreamingLine) */
 .caret {
   animation: caret 1s steps(1) infinite;
 }
 @keyframes caret {
   50% { opacity: 0; }
-}
-
-/* Earth's horizon in the hero slowly rises into place when the page opens */
-.horizon-rise {
-  animation: horizon-rise 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-}
-@keyframes horizon-rise {
-  from { opacity: 0; transform: translateY(60px) scale(1.04); }
-  to { opacity: 1; transform: none; }
 }
 
 /* The hand in the light beam floats up and down very slightly */
@@ -225,25 +234,22 @@ body {
   50% { translate: 0 calc(-50% - 8px); }
 }
 
-/* The star info card pops in */
-.star-card-in {
-  animation: star-card-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+/* Light that gently brightens and dims: the background's side light (NightSky) and the contact light beam */
+.breathe {
+  animation: breathe 8s ease-in-out infinite;
 }
-@keyframes star-card-in {
-  from { opacity: 0; transform: translateY(6px) scale(0.97); }
-  to { opacity: 1; transform: none; }
-}
-
-/* The side light gently brightens and dims */
-.star-breathe {
-  animation: star-breathe 8s ease-in-out infinite;
-}
-@keyframes star-breathe {
+@keyframes breathe {
   0%, 100% { opacity: 0.85; }
   50% { opacity: 1; }
 }
 
-/* The waving photo in the footer sways gently from side to side */
+/* Anything that shifts with the mouse (data-parallax, see lib/pointer.ts) gets its own layer,
+   so moving it doesn't make the browser repaint it */
+[data-parallax] {
+  will-change: translate;
+}
+
+/* The waving photo in the contact scene sways gently from side to side */
 .wave-sway {
   animation: wave-sway 3.2s ease-in-out infinite;
 }
@@ -252,7 +258,18 @@ body {
   50% { transform: rotate(1.5deg); }
 }
 
-/* People who turned on "reduce motion" get everything shown without animation */
+/* Result bars on the project cards: they fill up to the score when the card scrolls into view.
+   --fill is the score from 0 to 1 (set in components/sections/Projects.tsx). */
+.meter {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) 0.35s;
+}
+.is-visible .meter {
+  transform: scaleX(var(--fill, 1));
+}
+
+/* People who turned on "reduce motion" get everything shown straight away, without animation */
 @media (prefers-reduced-motion: reduce) {
   .reveal,
   .word {
@@ -268,16 +285,16 @@ body {
   .panel-in,
   .panel-out,
   .beam-in,
-  .beam-breathe,
+  .breathe,
   .hand-float,
-  .star-card-in,
-  .star-breathe,
   .wave-sway,
   .film-grain,
-  .scroll-line,
   .caret,
-  .horizon-rise,
   .wobble:hover {
     animation: none;
+  }
+  .meter {
+    transform: scaleX(var(--fill, 1));
+    transition: none;
   }
 }

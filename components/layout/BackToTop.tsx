@@ -19,11 +19,11 @@ export default function BackToTop() {
     <button
       onClick={scrollToTop}
       aria-label="Back to top"
-      className={`suck-fixed group fixed right-5 bottom-5 z-40 grid h-12 w-12 place-items-center rounded-full border border-line bg-card backdrop-blur-md transition-all duration-500 hover:border-accent sm:right-10 sm:bottom-8 ${
+      className={`suck-fixed group fixed right-5 bottom-5 z-40 grid h-12 w-12 place-items-center rounded-full border border-line bg-card transition-all duration-500 hover:border-accent sm:right-10 sm:bottom-8 ${
         show ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"
       }`}
     >
-      {/* The arrow lifts off on hover, like a rocket */}
+      {/* The arrow moves up a little on hover */}
       <span className="text-lg transition duration-300 group-hover:-translate-y-1 group-hover:text-accent">↑</span>
     </button>
   );

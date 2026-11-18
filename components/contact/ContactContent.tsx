@@ -35,7 +35,7 @@ export default function ContactContent({ startDelay = 0 }: { startDelay?: number
           Got an idea, a role, or just want to say hello? I&apos;d love to hear from you.
         </p>
 
-        {/* Gmail me (warm, solid, with a hover menu) + LinkedIn + GitHub (outlined).
+        {/* Gmail me (pale blue, solid, with a hover menu) + LinkedIn + GitHub (outlined).
             The outer span does the rise-in animation, the link itself wobbles on hover
             (they're on separate elements so the two animations don't fight). */}
         <div className="mt-8 flex flex-wrap gap-3">
@@ -52,8 +52,8 @@ export default function ContactContent({ startDelay = 0 }: { startDelay?: number
                 rel="noreferrer"
                 className={`wobble group inline-flex items-center gap-2.5 rounded-full px-5 py-3 text-sm font-medium transition-colors ${
                   b.main
-                    ? "bg-[#ffe2b8] text-black shadow-[0_0_30px_rgba(255,210,150,0.25)] hover:bg-white"
-                    : "border border-white/20 bg-white/5 text-white backdrop-blur-md hover:border-[#ffe2b8]/60 hover:bg-white/10"
+                    ? "bg-[#a9c9ff] text-black shadow-[0_0_30px_rgba(120,170,255,0.3)] hover:bg-white"
+                    : "border border-white/20 bg-white/5 text-white backdrop-blur-md hover:border-[#a9c9ff]/60 hover:bg-white/10"
                 }`}
               >
                 {b.icon}

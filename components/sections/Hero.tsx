@@ -1,80 +1,128 @@
-import Image from "next/image";
-import DottedPortrait from "../DottedPortrait";
-import Reveal from "../Reveal";
-import LetsTalkButton from "../LetsTalkButton";
-import LocalTime from "../LocalTime";
-import StreamingLine from "../StreamingLine";
-import { profile, sky } from "@/data/site";
+import DottedPortrait from "@/components/hero/DottedPortrait";
+import Reveal from "@/components/ui/Reveal";
+import LetsTalkButton from "@/components/ui/LetsTalkButton";
+import LocalTime from "@/components/hero/LocalTime";
+import StreamingLine from "@/components/hero/StreamingLine";
+import { profile } from "@/data/site";
 
 /**
- * The first screen, laid out like an editorial magazine cover:
- *  - your dotted portrait in the middle, fading softly into the page
- *  - your name huge underneath, in an elegant serif
- *  - a quote that types itself out like an AI answer, and two buttons
- *  - a small bar along the bottom (the live sky behind is NightSky, in layout.tsx)
- *  - Earth's glowing horizon just under the buttons (the start of the "leaving Earth" journey)
+ * The first screen. In a few seconds it should answer: who is this, and what do they do?
  *
- * The section is exactly one screen tall, and the portrait and name shrink on short
- * screens, so the horizon and buttons are always visible without scrolling.
+ *  Left:   your role and status, your name (huge), one line about you, and the main buttons.
+ *  Right:  your portrait made of dots, fading softly into the page.
+ *  Bottom: your motto typing itself out like an AI answer, and your local time.
+ *
+ * It uses the full width of the screen ("page-width" in globals.css): the text starts under the
+ * navbar's logo and the portrait ends under the "Let's talk" button. Your name and the portrait
+ * grow with the screen, so a wide screen doesn't leave them looking small.
+ * On phones the two halves stack: text first, portrait below.
+ * Behind it (and the whole site): a near-black night sky with slowly drifting stars
+ * (NightSky + StarField, in layout.tsx).
  */
 export default function Hero() {
-  return (
-    <section id="top" className="relative flex h-svh min-h-[36rem] flex-col px-6 pt-24 sm:px-10">
-      {/* Earth's horizon. The picture is as wide as the screen, and moved so that
-          its glowing curve (40% down the picture) lands just under the buttons. Faded on all sides. */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 hidden overflow-hidden dark:block">
-        <div
-          className="horizon-rise absolute inset-x-0 mix-blend-screen top-[calc(100%-96px-23.8vw)] aspect-[588/350] [mask-image:linear-gradient(to_bottom,transparent_30%,black_39%,black_43%,transparent_49%),linear-gradient(to_right,transparent,black_15%,black_85%,transparent)] [mask-composite:intersect]"
-        >
-          <Image src="/media/earth-horizon-gold.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
-        </div>
-      </div>
+  // The last word of your name gets the blue highlight: "Arpan Kumar" + "Panda"
+  const nameWords = profile.name.split(" ");
+  const lastName = nameWords.pop();
+  const firstNames = nameWords.join(" ");
 
-      {/* Center: portrait, then the big name, then a line and the buttons */}
-      <div className="relative flex flex-1 flex-col items-center justify-end pb-28 text-center">
-        {/* The portrait sits behind the top of the name */}
-        <div className="depth-2 relative -mb-16 aspect-square w-[min(85vw,32rem,54vh)] sm:-mb-24">
+  // Small text links next to the buttons
+  const links = [
+    { label: "GitHub", href: profile.github },
+    { label: "LinkedIn", href: profile.linkedin },
+    { label: "Résumé", href: profile.resume }, // hidden until you add it in data/site.ts
+  ].filter((link) => link.href);
+
+  return (
+    <section id="top" className="page-width relative flex min-h-[max(100svh,40rem)] flex-col pt-28 pb-8">
+      {/* Two columns from tablet size up (text a bit wider than the portrait), one column on phones.
+          The numbers are shares of the width: on wide screens (xl) the text gets 1.1 parts and the
+          portrait 0.9. Give the second number more to make room for a bigger portrait. */}
+      <div className="grid flex-1 items-center gap-14 md:grid-cols-[1.2fr_0.8fr] md:gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10 xl:grid-cols-[1.1fr_0.9fr]">
+        {/* Left: who you are */}
+        <div className="relative z-10" suppressHydrationWarning data-parallax="8">
+          {/* Role, and a green "available" dot with your status */}
+          <Reveal>
+            <p className="flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-xs uppercase">
+              <span className="flex items-center gap-3 tracking-[0.3em] text-accent">
+                <span className="h-px w-8 bg-accent" />
+                {profile.role}
+              </span>
+              <span className="flex items-center gap-2 tracking-[0.15em] text-muted">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inset-0 rounded-full bg-emerald-400/70 motion-safe:animate-ping" />
+                  <span className="relative h-2 w-2 rounded-full bg-emerald-400" />
+                </span>
+                {profile.status}
+              </span>
+            </p>
+          </Reveal>
+
+          {/* Your name: first names in white, surname in blue on its own line.
+              From tablet size up, the letters are 7% of the screen's width (7vw), so the name
+              gets bigger on bigger screens (never smaller than 52px or bigger than 136px). */}
+          <Reveal delay={120}>
+            <h1 className="mt-6 font-display text-[clamp(2.6rem,12vw,4.5rem)] leading-[0.95] font-bold tracking-[-0.035em] md:text-[clamp(3.25rem,7vw,8.5rem)]">
+              {firstNames}
+              <br />
+              <span className="bg-gradient-to-r from-accent to-accent-2 bg-clip-text pr-1 text-transparent">{lastName}</span>
+            </h1>
+          </Reveal>
+
+          <Reveal delay={240}>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted 2xl:max-w-2xl 2xl:text-xl">{profile.tagline}</p>
+          </Reveal>
+
+          <Reveal delay={360} className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-4">
+            {/* The main button: solid and light, so it's the first thing you'd click */}
+            <a
+              href="#projects"
+              className="wobble inline-flex items-center gap-2 rounded-full bg-fg px-5 py-2.5 text-sm font-medium text-bg transition-colors hover:bg-accent-2"
+            >
+              View my work <span aria-hidden>↓</span>
+            </a>
+            {/* Light sweeps across on hover; click = the page gets pulled into a burst of light (contact screen) */}
+            <LetsTalkButton variant="outline">Let&apos;s connect</LetsTalkButton>
+
+            <span className="flex items-center gap-5 pl-1 font-mono text-xs text-muted">
+              {links.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-block py-2.5 underline-offset-4 transition-colors hover:text-fg hover:underline"
+                >
+                  {link.label} <span aria-hidden>↗</span>
+                </a>
+              ))}
+            </span>
+          </Reveal>
+        </div>
+
+        {/* Right: the dotted portrait, pushed to the right edge.
+            HOW BIG IT IS (from tablet size up): the smallest of these three
+              - 100%              = as wide as its column
+              - 72vh              = 72% of the screen's height (raise this number for a bigger photo)
+              - 100svh - 15rem    = the screen's height minus the navbar and the bottom bar,
+                                    so it always fits on the first screen */}
+        <div suppressHydrationWarning data-parallax="16" className="relative mx-auto aspect-square w-[min(80%,19rem)] sm:w-[22rem] md:mx-0 md:w-[min(100%,72vh,calc(100svh-15rem))] md:justify-self-end">
           <DottedPortrait src="/me/arpan-cutout.png" alt={`Dotted portrait of ${profile.name}`} />
         </div>
-
-        {/* The full name: first two words upright, surname in italics */}
-        <Reveal delay={250} className="depth-1 relative z-10">
-          <h1 className="mt-3 font-serif text-[clamp(3rem,min(8.5vw,12vh),8rem)] leading-[0.9] tracking-tight">
-            Arpan Kumar <span className="bg-gradient-to-r from-accent to-accent-2 bg-clip-text pr-2 text-transparent italic">Panda</span>
-          </h1>
-        </Reveal>
-
-        {/* The quote "generates" word by word, like an AI answer */}
-        <StreamingLine
-          text={profile.heroLine}
-          className="relative z-10 mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg"
-        />
-
-        <Reveal delay={500} className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4">
-          <a
-            href="#projects"
-            className="wobble flex items-center gap-3 rounded-full border border-line bg-card px-6 py-3 text-sm font-medium backdrop-blur-md transition-colors hover:border-accent dark:bg-black/55"
-          >
-            Explore my work <span aria-hidden>↓</span>
-          </a>
-          {/* Light sweeps across on hover; click = the page gets pulled into a burst of light (contact screen) */}
-          <LetsTalkButton variant="outline">Let&apos;s connect</LetsTalkButton>
-        </Reveal>
       </div>
 
-      {/* Bottom bar */}
-      <div className="absolute inset-x-6 bottom-6 z-10 flex items-center justify-between font-mono text-[10px] tracking-[0.25em] text-muted uppercase sm:inset-x-10 dark:[text-shadow:0_1px_6px_rgba(0,0,0,0.95)]">
-        <span className="flex items-center gap-3">
-          <span className="scroll-line block h-6 w-px bg-accent" /> Scroll to explore
-        </span>
-        {/* The background is the real sky over this place, right now */}
-        <span className="hidden items-center gap-2 rounded-full px-3 py-1.5 md:dark:flex dark:bg-black/60 dark:backdrop-blur-md">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
-          Live sky over {sky.place} · hover a star
-        </span>
-        <span className="hidden sm:block">
-          <LocalTime />
-        </span>
+      {/* Bottom bar: your motto, and where you are */}
+      <div className="relative z-10 mt-12 flex items-start justify-between gap-8 border-t border-line pt-5 font-mono text-xs leading-relaxed">
+        {/* The motto "generates" word by word, like an AI answer, after a ">" prompt */}
+        <div className="flex gap-3 text-fg/80">
+          <span aria-hidden className="text-accent">
+            &gt;
+          </span>
+          <StreamingLine text={profile.heroLine} />
+        </div>
+        {/* Hidden on phones, to keep the bar clean */}
+        <p className="hidden shrink-0 tracking-[0.2em] text-muted uppercase sm:block">
+          {profile.location} · <LocalTime />
+        </p>
       </div>
     </section>
   );

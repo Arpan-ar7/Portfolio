@@ -40,7 +40,7 @@ export default function EmailButton({ email }: { email: string }) {
         href={gmail}
         target="_blank"
         rel="noreferrer"
-        className="wobble group inline-flex items-center gap-2.5 rounded-full bg-[#ffe2b8] px-5 py-3 text-sm font-medium text-black shadow-[0_0_30px_rgba(255,210,150,0.25)] transition-colors hover:bg-white"
+        className="wobble group inline-flex items-center gap-2.5 rounded-full bg-[#a9c9ff] px-5 py-3 text-sm font-medium text-black shadow-[0_0_30px_rgba(120,170,255,0.3)] transition-colors hover:bg-white"
       >
         <MailIcon />
         Gmail me
@@ -49,7 +49,7 @@ export default function EmailButton({ email }: { email: string }) {
 
       {/* The menu. The pt-2 gap is part of the hover area, so moving the mouse down to it doesn't close it. */}
       <span className="pointer-events-none invisible absolute top-full left-0 z-20 pt-2 opacity-0 transition-all duration-200 group-focus-within/email:pointer-events-auto group-focus-within/email:visible group-focus-within/email:opacity-100 group-hover/email:pointer-events-auto group-hover/email:visible group-hover/email:opacity-100">
-        <span className="block w-60 translate-y-1 rounded-2xl border border-white/10 bg-[#16130d]/95 p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-transform duration-200 group-hover/email:translate-y-0">
+        <span className="block w-60 translate-y-1 rounded-2xl border border-white/10 bg-[#0d1119]/95 p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-transform duration-200 group-hover/email:translate-y-0">
           <span className="block px-3 pt-2 pb-1.5 font-mono text-[11px] text-white/50">{email}</span>
           <a href={gmail} target="_blank" rel="noreferrer" className={item}>
             <GmailIcon /> Open in Gmail

@@ -1,20 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Space_Grotesk, Instrument_Serif } from "next/font/google";
+import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import NightSky from "@/components/NightSky";
-import StarLight from "@/components/StarLight";
-import SmoothScroll from "@/components/SmoothScroll";
+import Navbar from "@/components/layout/Navbar";
+import NightSky from "@/components/background/NightSky";
+import SmoothScroll from "@/components/layout/SmoothScroll";
 import ContactPanel from "@/components/contact/ContactPanel";
-import BackToTop from "@/components/BackToTop";
+import BackToTop from "@/components/layout/BackToTop";
 import { profile } from "@/data/site";
 
-// Fonts: Geist for body text, Geist Mono for small "space console" labels,
-// Space Grotesk for headings, Instrument Serif for the big elegant name in the hero.
+// Fonts: Geist for body text, Geist Mono for the small code-style labels and numbers,
+// Space Grotesk for headings and your name.
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 const spaceGrotesk = Space_Grotesk({ variable: "--font-space-grotesk", subsets: ["latin"] });
-const instrumentSerif = Instrument_Serif({ variable: "--font-instrument-serif", weight: "400", style: ["normal", "italic"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: `${profile.name} — ${profile.role}`,
@@ -25,12 +23,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`dark ${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${instrumentSerif.variable} antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen font-sans">
-        {/* Background: black with soft warm light from the side, with the real night sky (live) on top */}
-        <StarLight />
+      {/* suppressHydrationWarning: browser extensions like Grammarly add their own attributes to
+          <body> before React loads. Without this, that shows up as a (harmless) error. */}
+      <body className="min-h-screen font-sans" suppressHydrationWarning>
+        {/* Background: near-black with soft blue light from the side */}
         <NightSky />
         <SmoothScroll />
         <Navbar />

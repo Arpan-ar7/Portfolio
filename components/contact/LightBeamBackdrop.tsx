@@ -7,13 +7,15 @@ import { useEffect, useRef } from "react";
 const BEAM_DEG = -20;
 
 /**
- * The background of the contact screen: a warm beam of light cutting across the dark,
+ * The background of the contact screen: a cool blue beam of light cutting across the dark,
  * a hand reaching up into it, Arpan on the right waving hi (the beam passes behind him),
  * film grain on top, and specks of dust drifting through it.
  * Dust is only bright when it floats inside the beam, like dust in sunlight.
  *
  * The hand is Adam's, from Michelangelo's "The Creation of Adam" (public domain),
- * cut out of the fresco and tinted gold (public/media/adam-hand.webp).
+ * cut out of the fresco and tinted gold (public/media/adam-hand.webp); a CSS filter turns it blue.
+ * (THEME: the gold version used beam/dust colors 255,200,140 / 255,240,220 / 255,232,200,
+ * and no filter on the hand.)
  *
  * Both images are small WebP files marked "priority", so they load with the page and are
  * ready the moment someone clicks "Let's talk" (no waiting on a blank light screen).
@@ -26,33 +28,37 @@ export default function LightBeamBackdrop({ className = "" }: { className?: stri
     <div aria-hidden className={`absolute inset-0 overflow-hidden bg-black ${className}`}>
       {/* The beam: two soft layers (a wide haze and a brighter core), brightest toward the right */}
       <div
-        className="beam-breathe absolute top-[55%] left-[-25%] h-[38%] w-[150%] -translate-y-1/2"
+        className="follows-pointer breathe absolute top-[55%] left-[-25%] h-[38%] w-[150%] -translate-y-1/2"
         style={{ rotate: `calc(${BEAM_DEG}deg + var(--mx, 0) * 3deg)` }}
+        // lib/pointer.ts may already have written --mx / --my on this element before React
+        // takes over the page. That's expected, so don't report it as an error.
+        suppressHydrationWarning
       >
-        <div className="absolute inset-0 blur-3xl [background:linear-gradient(to_right,transparent_10%,rgba(120,75,35,0.35)_40%,rgba(255,200,140,0.6)_72%,rgba(255,240,220,0.85)_100%)] [mask-image:radial-gradient(ellipse_65%_50%_at_75%_50%,black_25%,transparent_100%)]" />
-        <div className="absolute inset-x-0 top-1/2 h-[38%] -translate-y-1/2 blur-xl [background:linear-gradient(to_right,transparent_25%,rgba(255,205,150,0.45)_55%,rgba(255,246,232,0.95)_100%)] [mask-image:radial-gradient(ellipse_60%_50%_at_80%_50%,black_30%,transparent_100%)]" />
+        <div className="absolute inset-0 blur-3xl [background:linear-gradient(to_right,transparent_10%,rgba(30,60,130,0.35)_40%,rgba(120,170,255,0.6)_72%,rgba(225,236,255,0.85)_100%)] [mask-image:radial-gradient(ellipse_65%_50%_at_75%_50%,black_25%,transparent_100%)]" />
+        <div className="absolute inset-x-0 top-1/2 h-[38%] -translate-y-1/2 blur-xl [background:linear-gradient(to_right,transparent_25%,rgba(130,180,255,0.45)_55%,rgba(235,243,255,0.95)_100%)] [mask-image:radial-gradient(ellipse_60%_50%_at_80%_50%,black_30%,transparent_100%)]" />
       </div>
 
       {/* The hand: rises from the lower left so the fingertips reach into the beam.
-          Tilted to match the beam, faded where the arm is cut off, and floating very slightly. */}
-      <div className="hand-float absolute top-[92%] left-[6%] aspect-[540/210] w-[max(42%,20rem)] origin-left -translate-y-1/2 rotate-[-24deg] [mask-image:linear-gradient(to_right,transparent,black_35%)]">
+          Tilted to match the beam, faded where the arm is cut off, and floating very slightly.
+          Smaller on phones so it doesn't cover the text. */}
+      <div className="hand-float absolute top-[92%] left-[6%] aspect-[540/210] w-[min(80%,16rem)] sm:w-[max(42%,20rem)] origin-left -translate-y-1/2 rotate-[-24deg] [mask-image:linear-gradient(to_right,transparent,black_35%)]">
         <Image
           src="/media/adam-hand.webp"
           alt=""
           fill
           priority
           sizes="(min-width: 768px) 42vw, 20rem"
-          className="object-contain"
+          className="object-contain [filter:grayscale(1)_sepia(1)_hue-rotate(185deg)_saturate(1.4)]"
         />
         {/* Extra light on the fingers, where the hand enters the beam (only drawn on the hand itself) */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,transparent_50%,rgba(255,230,190,0.3))] mix-blend-screen [mask-image:url(/media/adam-hand.webp)] [mask-size:100%_100%]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,transparent_50%,rgba(190,215,255,0.3))] mix-blend-screen [mask-image:url(/media/adam-hand.webp)] [mask-size:100%_100%]" />
       </div>
 
       {/* Arpan waving hi, standing on the right (hidden on phones, where there's no room).
-          Warmed a little to match the golden light, with a soft warm rim, and his photo's
+          Slightly muted to sit in the blue light, with a soft blue rim, and his photo's
           cut-off bottom fades into the dark. Sways gently, like he's waving. */}
       <div className="absolute right-[3%] bottom-0 hidden h-[78%] md:block lg:right-[5%]">
-        <div className="wave-sway h-full origin-bottom drop-shadow-[0_0_28px_rgba(255,200,140,0.28)]">
+        <div className="wave-sway h-full origin-bottom drop-shadow-[0_0_28px_rgba(120,170,255,0.3)]">
           <Image
             src="/me/arpan-wave.webp"
             alt=""
@@ -60,7 +66,7 @@ export default function LightBeamBackdrop({ className = "" }: { className?: stri
             height={1181}
             priority
             sizes="600px"
-            className="h-full w-auto brightness-[0.85] saturate-[0.85] sepia-[0.15] [mask-image:linear-gradient(to_bottom,black_72%,transparent)]"
+            className="h-full w-auto brightness-[0.85] saturate-[0.85] [mask-image:linear-gradient(to_bottom,black_72%,transparent)]"
           />
         </div>
       </div>
@@ -143,7 +149,7 @@ function BeamDust() {
         const lit = light(s.x, s.y);
         const flicker = 0.75 + 0.25 * Math.sin(t * 1.5 + s.phase);
         const a = (0.05 + lit * 0.9) * flicker; // faint in the dark, glowing in the light
-        ctx.fillStyle = `rgba(255,232,200,${a})`;
+        ctx.fillStyle = `rgba(210,228,255,${a})`;
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.r * (0.7 + lit * 0.6), 0, Math.PI * 2);
         ctx.fill();

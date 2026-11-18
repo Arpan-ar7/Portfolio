@@ -4,8 +4,8 @@
 
 **AI/ML engineer in the making. Software that works. Always looking up at the stars.**
 
-A space-themed personal portfolio where the background is the *real* night sky, live,
-and scrolling the page takes you on a trip from Earth to the Moon.
+My personal portfolio: a dark night sky, a portrait made of dots, and a 3D orbit of the
+projects I've built.
 
 <!-- When the site is deployed, add the live link here:
 [**Visit the live site →**](https://your-domain.com)
@@ -15,78 +15,35 @@ and scrolling the page takes you on a trip from Earth to the Moon.
 [![React](https://img.shields.io/badge/React-19-149eca?style=flat-square&logo=react&logoColor=white)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![No UI libraries](https://img.shields.io/badge/UI_libraries-none-f5c451?style=flat-square)](#tech-stack)
+[![No UI libraries](https://img.shields.io/badge/UI_libraries-none-5b9bff?style=flat-square)](#tech-stack)
 
 </div>
 
-<!-- Screenshots: save images in docs/screenshots/ with these names, then delete this comment line and the closing one below.
-
-<p align="center">
-  <img src="docs/screenshots/hero.png" alt="Hero: dotted portrait over the live night sky" width="100%" />
-</p>
-<p align="center">
-  <img src="docs/screenshots/contact.png" alt="Contact: a hand reaching into a beam of light" width="49%" />
-  <img src="docs/screenshots/footer.png" alt="Footer: Earthrise over the Moon" width="49%" />
-</p>
-
--->
-
 ---
 
-## The idea
+## What's on the page
 
-The whole page is one small journey through space:
+1. **Hero.** My name, what I do, and my photo drawn as thousands of dots. The dots gather
+   into the portrait on load, ripple away from your cursor, and scatter as you scroll.
+   My motto types itself out at the bottom, like an AI model answering.
+2. **About.** A panel that rises up and fills the screen as you scroll to it.
+3. **My toolkit.** My skills, grouped like a spec sheet.
+4. **Things I've built.**
+   - Two highlight cards: my research on machine unlearning, and UniCart, a live app on Google Play.
+   - All my other projects on a **3D orbit**: scrolling turns a spiral of glowing screens around
+     a beam of light. Every project type has its own bold color. Click a project to open its
+     details, photos and GitHub link. It works on phones and tablets too.
+5. **Let's talk.** The page swirls into the button and a burst of light opens a contact scene:
+   a beam of light, drifting dust, Michelangelo's hand reaching in, and me waving.
 
-1. **Lift-off.** You start on Earth: a glowing horizon under my name, with the real stars overhead.
-2. **The trip.** Scrolling carries you through About, Skills and Projects.
-3. **First contact.** "Let's talk" pulls the whole page into a burst of light.
-4. **Landing.** The page ends on the Moon, looking back at the Earth, with a trip meter showing you've travelled **384,400 km**.
+Behind everything: a near-black night sky with slowly drifting, twinkling stars. The page
+shifts a little with your mouse, for a feeling of depth.
 
-It's black and gold, with soft light coming in from the side. No UI libraries: just React, Tailwind and a few canvases.
-
-## Features
-
-### 🌌 A live night sky
-The background is the actual sky above Rajkot, India, at this exact moment.
-
-- About 100 real bright stars and constellation lines (Orion, Scorpius, the Big Dipper, Cassiopeia and more).
-- The sky turns slowly with the Earth's real rotation. Come back in a few hours and different stars will be up.
-- **Hover** a star to see its name and constellation, and light up the constellation's lines.
-- **Click** a star to open an info card: a short fact, how bright it is, where it is in the sky *right now* ("40° up, toward the north-east"), and a Wikipedia link.
-
-### 🧑‍🚀 A portrait made of stars
-- My photo, drawn as thousands of halftone dots with a gold rim light.
-- On load, the dots start scattered like stars and gather into the portrait in a wave.
-- Hover it and the dots ripple away from your cursor and float back.
-- Scroll down and it scatters into space.
-
-### ✍️ A quote that types itself
-The tagline streams in word by word, like an AI model generating an answer, with a blinking cursor.
-
-### ✨ "Let's talk"
-- The page swirls into the button you clicked, and a burst of warm light fills the screen.
-- You land in a dark scene with a beam of golden light, dust drifting through it, and film grain.
-- Michelangelo's hand reaches into the light from one side while I wave from the other.
-- **Gmail me** opens Gmail directly. Hover it for **Open in Gmail** or **Copy email**.
-
-### 🌕 The landing
-- *Earthrise* over the Moon, a trip meter that counts up as you scroll, and a few honest lines.
-
-### ♿ Made with care
+### Made with care
 - Respects **reduced motion**: every animation calms down or switches off.
-- Keyboard friendly, with real links and buttons and `Esc` to close panels.
-- Canvases pause when off screen or when the tab is hidden. The images are small WebP files, preloaded so the contact scene opens instantly.
-
-## How the live sky works
-
-No API, no images: it's computed in the browser every frame.
-
-1. Each star has a fixed "address" on the sky: **right ascension** and **declination** ([`lib/stars.ts`](lib/stars.ts)).
-2. From the current time and the observer's longitude, the code works out the **local sidereal time**: which slice of the sky is overhead right now.
-3. Spherical trigonometry turns each star's address into **altitude** (how high it is) and **azimuth** (compass direction) for Rajkot.
-4. A stereographic projection draws the dome of the sky on the screen as if you're lying on your back looking up: straight overhead in the middle, north at the top.
-
-The ~100 named stars are real. The faint background dots are decorative filler for depth.
+- Keyboard friendly: real links and buttons, and `Esc` closes windows.
+- Smooth: only cheap things move (`transform` / `opacity`), and canvases pause when off screen.
+- Works on phones, tablets and desktops.
 
 ## Tech stack
 
@@ -95,9 +52,9 @@ The ~100 named stars are real. The faint background dots are decorative filler f
 | **Framework** | [Next.js 16](https://nextjs.org/) (App Router, Turbopack) |
 | **UI** | [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) |
 | **Styling** | [Tailwind CSS 4](https://tailwindcss.com/) + a little custom CSS for animations |
-| **Graphics** | HTML Canvas (night sky, dotted portrait, light-beam dust) |
+| **Graphics** | HTML Canvas (stars, dotted portrait, light-beam dust) and CSS 3D (the project orbit) |
 | **Smooth scrolling** | [Lenis](https://lenis.darkroom.engineering/) |
-| **Fonts** | Instrument Serif, Space Grotesk, Geist, Geist Mono |
+| **Fonts** | Space Grotesk, Geist, Geist Mono |
 
 ## Getting started
 
@@ -121,40 +78,89 @@ Then open [http://localhost:3000](http://localhost:3000).
 
 ## Make it yours
 
-Almost everything you'd want to change lives in **one file**: [`data/site.ts`](data/site.ts).
+All the text lives in the [`data/`](data) folder. You don't need to touch the components to change content.
 
-- **Profile:** name, role, tagline, email, GitHub, LinkedIn
-- **About:** paragraphs, stats and the closing quote
-- **Skills:** the two skill cards and their groups
-- **Projects:** titles, descriptions, tags and links
-- **The sky:** change `sky.lat` / `sky.lon` to show the live sky over *your* city
+| File | What's in it |
+| --- | --- |
+| [`data/profile.ts`](data/profile.ts) | Name, role, tagline, email, links, About text and stats |
+| [`data/skills.ts`](data/skills.ts) | The "My toolkit" section |
+| [`data/spotlights.ts`](data/spotlights.ts) | The two highlight cards (research, live app) |
+| [`data/projects.ts`](data/projects.ts) | All the other projects, with their photos |
 
-Star facts and constellation names are in [`lib/starInfo.ts`](lib/starInfo.ts). Colors are CSS variables at the top of [`app/globals.css`](app/globals.css).
+**Adding a project photo:** put the image in `public/projects/`, then add it to the project's
+`images` list in `data/projects.ts` (with its width and height in pixels).
+
+Colors are CSS variables at the top of [`app/globals.css`](app/globals.css).
 
 ## Project structure
 
+Every file does one job and starts with a short comment saying what it is.
+
 ```text
-app/
-  layout.tsx            Fonts, background layers, navbar, contact panel
-  page.tsx              The sections, top to bottom
-  globals.css           Colors, animations, reduced-motion rules
+app/                        Next.js entry point
+  layout.tsx                  Fonts, background, navbar, contact panel (on every page)
+  page.tsx                    The page: its sections, top to bottom
+  globals.css                 Colors, animations, reduced-motion rules
+
 components/
-  sections/             Hero, About, Skills, Projects, Contact, Footer
-  contact/              "Let's talk" panel, light-beam scene, Gmail button
-  NightSky.tsx          The live sky, hover labels and star info card
-  DottedPortrait.tsx    The halftone portrait (canvas)
-  StarLight.tsx         Black background with soft side light
-  StreamingLine.tsx     The AI-style typing quote
-  TripMeter.tsx         Earth-to-Moon distance counter
-data/
-  site.ts               All the text and links on the site
-lib/
-  stars.ts              Star catalog + constellation lines
-  starInfo.ts           Star facts and constellation names
-public/
-  me/                   My photos
-  media/                Space images
+  sections/                 One file per page section, in page order
+    Hero.tsx  About.tsx  Skills.tsx  Projects.tsx  Contact.tsx  Footer.tsx
+
+  hero/                     Pieces only the Hero uses
+    DottedPortrait.tsx        The portrait made of dots (canvas)
+    StreamingLine.tsx         The motto that types itself out
+    LocalTime.tsx             Live clock in the bottom bar
+
+  projects/                 Pieces only the Projects section uses
+    SpotlightCard.tsx         The two highlight cards (research, live app)
+    ProjectOrbit.tsx          The 3D orbit you scroll through: scrolling + layout
+    OrbitScreen.tsx           One glowing screen on the orbit
+    ProjectInfo.tsx           The text and buttons about the project at the front
+    TypeFilter.tsx            Project types: a list (big screens) or chips (phones)
+    OrbitProgress.tsx         "03 / 08" and the progress bar
+    ProjectDetails.tsx        The window that opens when you click a project
+    MiniChart.tsx             Small decorative chart for projects without a photo
+    projectTypes.ts           The bold color for each project type
+
+  contact/                  The "Let's talk" screen and the contact section's pieces
+    ContactPanel.tsx          The full-screen panel and its opening/closing transition
+    ContactContent.tsx        The heading, text and links inside it
+    LightBeamBackdrop.tsx     The light-beam scene behind it
+    EmailButton.tsx           "Gmail me" with open/copy options
+
+  background/               The night sky behind the whole site
+    NightSky.tsx              The dark sky and the soft blue side light
+    StarField.tsx             The drifting, twinkling stars (canvas)
+
+  layout/                   Always on screen
+    Navbar.tsx  BackToTop.tsx  SmoothScroll.tsx
+
+  ui/                       Small pieces shared by several sections
+    Reveal.tsx  RevealWords.tsx  ScrollRise.tsx  SectionHeading.tsx
+    GroupLabel.tsx  LetsTalkButton.tsx  icons.tsx
+
+data/                       All the text on the site (see "Make it yours")
+  site.ts                     Collects the files below in one import
+  profile.ts  skills.ts  spotlights.ts  projects.ts
+
+lib/                        Plain helpers, no React
+  dom.ts                      Where an element is on the page, is the contact screen open
+  format.ts                   Small text helpers (e.g. 1 → "01")
+  pointer.ts                  Mouse tracking for the "follow the cursor" effect
+  smoothScroll.ts             Smooth scrolling (Lenis) helpers
+
+public/                     Images, served as they are
+  me/                         My photos
+  media/                      Images for the contact scene
+  projects/                   Project screenshots
 ```
+
+**Where does a new file go?**
+- A whole new page section → `components/sections/`, then add it to `app/page.tsx`.
+- A piece used by only one section → that section's folder (`hero/`, `projects/`, `contact/`).
+- A piece used by several sections → `components/ui/`.
+- A helper that isn't a component → `lib/`.
+- Text or project info → `data/`.
 
 ## Deploying
 
@@ -167,10 +173,8 @@ npm run start
 
 ## Credits
 
-- **"Earthrise"**: photo by astronaut William Anders, NASA, Apollo 8 (1968). Public domain.
-- **"The Creation of Adam"**: fresco by Michelangelo (c. 1512), via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Michelangelo_-_Creation_of_Adam_(cropped).jpg). Public domain. Adam's hand is cut out and tinted gold.
-- **Star positions**: standard J2000 catalog values for the brightest stars.
-- **Built with help from AI.** I'm not hiding it (the footer says so too 😄).
+- **"The Creation of Adam"**: fresco by Michelangelo (c. 1512), via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Michelangelo_-_Creation_of_Adam_(cropped).jpg). Public domain. Adam's hand is cut out and tinted blue.
+- **Built with help from AI.**
 
 ## About me
 

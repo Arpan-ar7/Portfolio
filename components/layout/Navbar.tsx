@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import LetsTalkButton from "./LetsTalkButton";
+import LetsTalkButton from "@/components/ui/LetsTalkButton";
 
 // Links in the header. Each "href" matches a section id on the page.
 const links = [
@@ -36,14 +36,17 @@ export default function Navbar() {
     <header
       className={`suck-fixed fixed inset-x-0 top-0 z-50 transition-transform duration-500 ease-out ${hidden ? "-translate-y-full" : "translate-y-0"}`}
     >
-      {/* Full width: links on the left edge, Let's talk on the right edge */}
-      <nav className="flex items-center justify-between px-6 py-5 sm:px-10">
+      {/* Full width: links on the left edge, Let's talk on the right edge.
+          "page-width" (globals.css) gives it the same side gaps as every section below. */}
+      <nav className="page-width flex items-center justify-between py-5">
         {/* Left: logo, then the section links (links hidden on phones to keep it clean) */}
         <div className="flex items-center gap-10">
           <a href="#top" className="font-display text-xl font-bold tracking-tight">
             AR<span className="text-accent">7</span>
           </a>
-          <ul className="hidden gap-8 text-sm text-muted md:flex">
+          {/* Link text size: text-base = 16px, and text-lg = 18px on very wide screens (3xl).
+              For even bigger links, go one step up: text-lg and 3xl:text-xl. */}
+          <ul className="hidden gap-8 text-base text-muted md:flex 3xl:gap-10 3xl:text-lg">
             {links.map((link) => (
               <li key={link.href}>
                 {/* The line under each link grows from the left on hover */}
