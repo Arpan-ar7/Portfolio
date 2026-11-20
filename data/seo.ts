@@ -1,6 +1,7 @@
 // ============================================================
 //  HOW GOOGLE (and LinkedIn, WhatsApp...) SEES YOUR SITE.
-//  Used by app/layout.tsx, app/sitemap.ts, app/robots.ts and app/opengraph-image.tsx.
+//  Used by app/layout.tsx, app/sitemap.ts and app/robots.ts.
+//  (The share picture is app/opengraph-image.jpg: if you change your name or role, ask to remake it.)
 // ============================================================
 
 export const seo = {

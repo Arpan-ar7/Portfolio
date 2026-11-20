@@ -104,7 +104,7 @@ app/                        Next.js entry point
   page.tsx                    The page: its sections, top to bottom
   globals.css                 Colors, animations, reduced-motion rules
   icon.png  apple-icon.png  favicon.ico   The site icon (my photo on blue)
-  opengraph-image.tsx         The picture shown when the link is shared
+  opengraph-image.jpg         The picture shown when the link is shared (1200 x 630)
   robots.ts  sitemap.ts       /robots.txt and /sitemap.xml for search engines
 
 components/

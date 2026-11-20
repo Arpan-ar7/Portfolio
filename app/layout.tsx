@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 const spaceGrotesk = Space_Grotesk({ variable: "--font-space-grotesk", subsets: ["latin"] });
 
 // What Google, LinkedIn, WhatsApp etc. read about the page. The text lives in data/seo.ts.
-// (The preview picture is app/opengraph-image.tsx; Next.js adds it by itself.)
+// (The preview picture is app/opengraph-image.jpg; Next.js adds it by itself.)
 export const metadata: Metadata = {
   metadataBase: new URL(seo.siteUrl), // so every link below becomes a full address
   title: seo.title,
