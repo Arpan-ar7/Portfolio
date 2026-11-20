@@ -27,6 +27,7 @@ export type Project = {
   demo?: string; // a live demo (Hugging Face Space, Streamlit, Vercel...). Leave it out if there isn't one.
   images?: ProjectImage[]; // photos shown when someone opens the project. The first one is also shown on its screen.
   logo?: { src: string; alt: string }; // the project's own logo (square image), shown next to its name
+  teammate?: string; // the name of someone from collaborators.ts you built it with (shown as a link)
 };
 
 // Every number here should come from the project's own notebook or app, measured on data the
@@ -64,6 +65,22 @@ export const projects: Project[] = [
     ],
   },
   {
+    title: "Multi-Agent Research System",
+    category: "Multi-agent system",
+    description:
+      "A team of AI agents built with LangGraph that researches any question like a careful human team: it plans, searches the web in parallel, fact-checks its sources, writes a report with citations, and critiques its own work before giving it to you.",
+    // (from the repo's README: the full benchmark table isn't finished yet, so the tests are the headline)
+    metric: { value: "87", label: "tests passing (unit + integration)" },
+    highlights: [
+      "Five agents: Planner → Researchers (one per sub-question, in parallel) → Fact-checker → Writer → Critic, which sends gaps back for another research round",
+      "Claims citing URLs that were never actually retrieved are thrown out; code, not the LLM, numbers the sources and builds the references",
+      "Every step is saved to SQLite, so a crashed or quota-stopped run resumes where it stopped; free models fall back to the next one when rate-limited",
+      "Use it from the command line, a FastAPI backend with live progress (Server-Sent Events), or a Streamlit UI; runs in Docker with CI on every push",
+    ],
+    tags: ["Python", "LangGraph", "LangChain", "FastAPI", "Streamlit", "Tavily", "LangSmith", "Docker"],
+    link: "https://github.com/Arpan-ar7/multiagent-langgraph-research",
+  },
+  {
     title: "Splitter: AI Clip Auto-Uploader",
     category: "AI automation",
     description:
@@ -76,6 +93,7 @@ export const projects: Project[] = [
     ],
     tags: ["Python", "yt-dlp", "FFmpeg", "OpenRouter (LLM)", "YouTube Data API", "Instagram Graph API", "Docker"],
     link: "https://github.com/Adarshmilan/autouploader",
+    teammate: "Adarsh Milan",
     // (A demo video can be added here later)
     images: [
       {
@@ -122,14 +140,6 @@ export const projects: Project[] = [
     metric: { value: "81%", label: "accuracy on 80K test pairs" },
     tags: ["NLP", "TF-IDF", "scikit-learn"],
     link: "https://github.com/Arpan-ar7/NLP-QuoraDuplicateQuestions",
-  },
-  {
-    title: "Understanding Machine Unlearning",
-    category: "Learning notes",
-    description:
-      "Where my unlearning research started: can a trained model forget part of its training data without being retrained from scratch? Notes and experiments on the basics, with Vision Transformers in PyTorch.",
-    tags: ["PyTorch", "Hugging Face", "Vision Transformers", "uv"],
-    link: "https://github.com/Arpan-ar7/Understanding-Machine-Unlearning",
   },
 
   // ---- Not AI/ML: software projects (kept at the end) ----

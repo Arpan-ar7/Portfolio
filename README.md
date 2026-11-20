@@ -86,6 +86,7 @@ All the text lives in the [`data/`](data) folder. You don't need to touch the co
 | [`data/skills.ts`](data/skills.ts) | The "My toolkit" section |
 | [`data/spotlights.ts`](data/spotlights.ts) | The two highlight cards (research, live app) |
 | [`data/projects.ts`](data/projects.ts) | All the other projects, with their photos |
+| [`data/collaborators.ts`](data/collaborators.ts) | People I build with: credited on our shared projects and in the "Built together" card |
 
 **Adding a project photo:** put the image in `public/projects/`, then add it to the project's
 `images` list in `data/projects.ts` (with its width and height in pixels).
@@ -104,7 +105,8 @@ app/                        Next.js entry point
 
 components/
   sections/                 One file per page section, in page order
-    Hero.tsx  About.tsx  Skills.tsx  Projects.tsx  Contact.tsx  Footer.tsx
+    Hero.tsx  About.tsx  Skills.tsx  Projects.tsx  Contact.tsx
+    BuiltTogether.tsx  Footer.tsx
 
   hero/                     Pieces only the Hero uses
     DottedPortrait.tsx        The portrait made of dots (canvas)
@@ -138,10 +140,11 @@ components/
   ui/                       Small pieces shared by several sections
     Reveal.tsx  RevealWords.tsx  ScrollRise.tsx  SectionHeading.tsx
     GroupLabel.tsx  LetsTalkButton.tsx  icons.tsx
+    TeammateLink.tsx          "Built together with <name> ↗" on shared projects
 
 data/                       All the text on the site (see "Make it yours")
   site.ts                     Collects the files below in one import
-  profile.ts  skills.ts  spotlights.ts  projects.ts
+  profile.ts  skills.ts  spotlights.ts  projects.ts  collaborators.ts
 
 lib/                        Plain helpers, no React
   dom.ts                      Where an element is on the page, is the contact screen open

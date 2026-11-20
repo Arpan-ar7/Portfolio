@@ -10,6 +10,7 @@ export type Spotlight = {
   points: string[]; // 3-4 short bullet points
   tags: string[];
   credit?: string; // small line about who it was done with
+  teammate?: string; // the name of someone from collaborators.ts you did it with (shown as a link)
   link?: { label: string; href: string }; // the button. Leave it out when there's nothing to link yet.
 };
 
@@ -34,6 +35,7 @@ export const spotlights: Spotlight[] = [
     ],
     tags: ["PyTorch", "Continual learning", "Machine unlearning", "Linear probes"],
     credit: "Co-first author · joint work at Marwadi University · paper being written",
+    teammate: "Adarsh Milan",
     // link: { label: "Read the paper", href: "..." },  // add this when the paper is out
   },
   {
@@ -42,9 +44,9 @@ export const spotlights: Spotlight[] = [
     title: "UniCart",
     description:
       "A campus delivery app where students help each other. Stuck in the hostel? Post what you need and the delivery fee you'll pay. A batchmate who is already outside picks it up and brings it to your block.",
-    // Numbers from the Play Store page on 15 Nov 2026. Update them as they grow.
+    // Downloads: 300+ (Arpan, 19 Nov 2026). Rating from the Play Store page on 15 Nov 2026. Update them as they grow.
     stats: [
-      { value: "100+", label: "downloads" },
+      { value: "300+", label: "downloads" },
       { value: "4.5 ★", label: "rating on Google Play" },
       { value: "Real users", label: "at Marwadi University" },
     ],
@@ -56,6 +58,7 @@ export const spotlights: Spotlight[] = [
     ],
     tags: ["Android", "Real-time feed", "In-app chat"],
     credit: "Built with my team · published as 2Hex",
+    teammate: "Adarsh Milan",
     link: { label: "Get it on Google Play", href: "https://play.google.com/store/apps/details?id=com.hex.uncart" },
   },
 ];

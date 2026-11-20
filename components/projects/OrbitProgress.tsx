@@ -1,7 +1,7 @@
 import { twoDigits } from "@/lib/format";
 
 /**
- * "Scroll ↓ to orbit · 03 / 08" and a bar that fills up as you go through the projects.
+ * "03 / 08" and a bar that fills up as you go through the projects.
  * Only one copy gets barRef (the one that's moved while you scroll); the phone copy follows
  * the current project instead.
  */
@@ -18,8 +18,8 @@ export default function OrbitProgress({
 }) {
   return (
     <div>
-      <div className="flex items-center justify-between font-mono text-[11px] tracking-[0.18em] text-muted uppercase">
-        <span>Scroll ↓ to orbit</span>
+      {/* the counter sits on the right, above the end of the bar */}
+      <div className="flex items-center justify-end font-mono text-[11px] tracking-[0.18em] text-muted uppercase">
         <span>
           <span className="text-fg">{twoDigits(active + 1)}</span> / {twoDigits(count)}
         </span>

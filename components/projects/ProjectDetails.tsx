@@ -7,6 +7,7 @@ import type { Project, ProjectImage } from "@/data/site";
 import { lockScroll } from "@/lib/smoothScroll";
 import { shareOf, shortLink, twoDigits } from "@/lib/format";
 import { GitHubIcon } from "@/components/ui/icons";
+import TeammateLink from "@/components/ui/TeammateLink";
 
 /**
  * The window that opens when you click a project: everything about it, its photos, and a big
@@ -97,6 +98,8 @@ export default function ProjectDetails({
             {project.title}
           </h3>
           <p className="mt-4 leading-relaxed text-muted sm:text-lg">{project.description}</p>
+          {/* Who it was built with, if anyone (links to their portfolio) */}
+          <TeammateLink name={project.teammate} color={color} className="mt-4" />
 
           {/* Photos. Wide ones (like screenshots of a website) are big, one under the other.
               Tall ones (like phone screenshots) sit side by side, three in a row. */}

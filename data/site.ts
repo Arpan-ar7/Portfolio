@@ -7,12 +7,14 @@
 //   skills.ts      the "My toolkit" section
 //   spotlights.ts  the research and live-app cards at the top of Projects
 //   projects.ts    all the other projects (and their photos)
+//   collaborators.ts  people you've built things with (credited on those projects)
 //
 //  The components import everything from here ("@/data/site"), so this file just
-//  collects the four files above in one place.
+//  collects the files above in one place.
 // ============================================================
 
 export * from "./profile";
 export * from "./skills";
 export * from "./spotlights";
 export * from "./projects";
+export * from "./collaborators";

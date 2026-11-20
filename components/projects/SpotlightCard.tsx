@@ -1,4 +1,5 @@
 import type { Spotlight } from "@/data/site";
+import TeammateLink from "@/components/ui/TeammateLink";
 
 /**
  * A big "showcase" card, used at the top of the Projects section for the two things that
@@ -59,6 +60,7 @@ export default function SpotlightCard({ item }: { item: Spotlight }) {
             ))}
           </ul>
           {item.credit && <p className="mt-4 font-mono text-[11px] tracking-[0.08em] text-muted">{item.credit}</p>}
+          <TeammateLink name={item.teammate} className="mt-2" />
         </div>
         {item.link && (
           <a
