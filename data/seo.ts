@@ -37,5 +37,6 @@ export const seo = {
 
   // Google Search Console's check that this site is yours. When you add the site there and pick
   // "HTML tag", paste just the content="..." code here (leave it empty until then).
-  googleVerification: "",
+  // (Added 20 Nov 2026. There's also a verification file: public/google3de07199265621e0.html)
+  googleVerification: "oT-W3j_mlRAUNGvqdIUhnUj4mi7GZr0ob16MVCMwxDU",
 };
