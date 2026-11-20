@@ -86,6 +86,7 @@ All the text lives in the [`data/`](data) folder. You don't need to touch the co
 | [`data/skills.ts`](data/skills.ts) | The "My toolkit" section |
 | [`data/spotlights.ts`](data/spotlights.ts) | The two highlight cards (research, live app) |
 | [`data/projects.ts`](data/projects.ts) | All the other projects, with their photos |
+| [`data/seo.ts`](data/seo.ts) | How Google and link previews see the site: address, title, description, other names |
 | [`data/collaborators.ts`](data/collaborators.ts) | People I build with: credited on our shared projects and in the "Built together" card |
 
 **Adding a project photo:** put the image in `public/projects/`, then add it to the project's
@@ -102,6 +103,9 @@ app/                        Next.js entry point
   layout.tsx                  Fonts, background, navbar, contact panel (on every page)
   page.tsx                    The page: its sections, top to bottom
   globals.css                 Colors, animations, reduced-motion rules
+  icon.png  apple-icon.png  favicon.ico   The site icon (my photo on blue)
+  opengraph-image.tsx         The picture shown when the link is shared
+  robots.ts  sitemap.ts       /robots.txt and /sitemap.xml for search engines
 
 components/
   sections/                 One file per page section, in page order
@@ -137,6 +141,9 @@ components/
   layout/                   Always on screen
     Navbar.tsx  BackToTop.tsx  SmoothScroll.tsx
 
+  seo/                      Invisible info for search engines
+    PersonJsonLd.tsx          Tells Google who the site is about (name, job, university, profiles)
+
   ui/                       Small pieces shared by several sections
     Reveal.tsx  RevealWords.tsx  ScrollRise.tsx  SectionHeading.tsx
     GroupLabel.tsx  LetsTalkButton.tsx  icons.tsx
@@ -144,7 +151,7 @@ components/
 
 data/                       All the text on the site (see "Make it yours")
   site.ts                     Collects the files below in one import
-  profile.ts  skills.ts  spotlights.ts  projects.ts  collaborators.ts
+  profile.ts  skills.ts  spotlights.ts  projects.ts  collaborators.ts  seo.ts
 
 lib/                        Plain helpers, no React
   dom.ts                      Where an element is on the page, is the contact screen open
